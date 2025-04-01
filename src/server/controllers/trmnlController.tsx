@@ -619,15 +619,25 @@ export const createTrmnlRoutes = (): Hono => {
             return c.text('Failed to query the database.', 500);
         }
 
+        const renderAll = (children: React.ReactNode) => {
+            const render = renderToString(children);
+            return {
+                markup: render,
+                markup_half_vertical: render,
+                markup_half_horizontal: render,
+                markup_quadrant: render,
+            } as const;
+        };
+
         if (canvasQuery.length === 0) {
             logger.info(
                 'Returning error markup for /generate/ with no canvas token.',
             );
-            return c.json({
-                markup: renderToString(
+            return c.json(
+                renderAll(
                     <TrmnlDisplayError errorMessage='plugin is not configured :(' />,
                 ),
-            });
+            );
         }
         const canvasData = canvasQuery[0];
 
@@ -644,23 +654,23 @@ export const createTrmnlRoutes = (): Hono => {
             logger.info(
                 'Returning error markup for /generate/ with canvas error.',
             );
-            return c.json({
-                markup: renderToString(
+            return c.json(
+                renderAll(
                     <TrmnlDisplayError
                         errorMessage={`canvas error: ${canvasDataResult.error}`}
                     />,
                 ),
-            });
+            );
         }
 
-        return c.json({
-            markup: renderToString(
+        return c.json(
+            renderAll(
                 <TrmnlDisplay
                     courses={canvasDataResult.courses}
                     assignments={canvasDataResult.assignments}
                 />,
             ),
-        });
+        );
     });
 
     return app;
