@@ -1,0 +1,6 @@
+@import "tailwindcss";
+
+@theme {
+    --font-display: "Merriweather", "sans-serif";
+    --font-sans: "Space Grotesk", "sans";
+}

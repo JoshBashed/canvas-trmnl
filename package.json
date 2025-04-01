@@ -1,0 +1,59 @@
+{
+    "name": "canvas-trmnl",
+    "version": "1.0.0",
+    "description": "Instructure Canvas LMS TRMNL plugin.",
+    "keywords": ["canvas", "lms", "trmnl"],
+    "author": "JoshuaBrest <36625023+JoshuaBrest@users.noreply.github.com>",
+    "license": "ISC",
+    "packageManager": "pnpm@10.6.5",
+    "main": "dist/index.cjs",
+    "type": "module",
+    "scripts": {
+        "start": "node --env-file .env .",
+        "format": "biome format --write",
+        "format:check": "biome format --check",
+        "lint": "biome lint --write",
+        "lint:check": "biome lint --check",
+        "watch": "rollup -c --watch",
+        "dev": "concurrently \"pnpm run watch\" \"node --env-file .env --watch ./dist/index.cjs\"",
+        "build": "rollup -c NODE_ENV:production",
+        "build:prod": "rollup -c --environment NODE_ENV:production",
+        "drizzle:generate": "drizzle-kit generate",
+        "drizzle:migrate": "drizzle-kit migrate",
+        "drizzle:up": "drizzle-kit up"
+    },
+    "dependencies": {
+        "@biomejs/biome": "^1.9.4",
+        "@hono/node-server": "^1.14.0",
+        "drizzle-orm": "^0.41.0",
+        "hono": "^4.7.5",
+        "pg": "^8.14.1",
+        "react": "^19.1.0",
+        "react-dom": "^19.1.0",
+        "react-router": "^7.4.1",
+        "rollup": "^4.38.0",
+        "zod": "^3.24.2"
+    },
+    "pnpm": {
+        "onlyBuiltDependencies": ["@biomejs/biome", "@swc/core", "esbuild"]
+    },
+    "devDependencies": {
+        "@rollup/plugin-alias": "^5.1.1",
+        "@rollup/plugin-commonjs": "^28.0.3",
+        "@rollup/plugin-node-resolve": "^16.0.1",
+        "@rollup/plugin-replace": "^6.0.2",
+        "@rollup/plugin-swc": "^0.4.0",
+        "@rollup/plugin-terser": "^0.4.4",
+        "@swc/core": "^1.11.13",
+        "@tailwindcss/postcss": "^4.0.17",
+        "@types/pg": "^8.11.11",
+        "@types/react": "^19.0.12",
+        "@types/react-dom": "^19.0.4",
+        "concurrently": "^9.1.2",
+        "drizzle-kit": "^0.30.6",
+        "postcss": "^8.5.3",
+        "rollup-plugin-copy": "^3.5.0",
+        "rollup-plugin-postcss": "^4.0.2",
+        "tailwindcss": "^4.0.17"
+    }
+}
