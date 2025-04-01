@@ -1,15 +1,15 @@
 import {
-    CreateConsumerRequestId,
-    CreateConsumerResponseSchema,
-    GlobalErrorResponseSchema,
-    UpdateCanvasDataRequestId,
-    UpdateCanvasDataResponseSchema,
     type CreateConsumerRequest,
+    CreateConsumerRequestId,
     type CreateConsumerResponse,
+    CreateConsumerResponseSchema,
     type GlobalErrorResponse,
+    GlobalErrorResponseSchema,
     type GlobalRequest,
     type UpdateCanvasDataRequest,
+    UpdateCanvasDataRequestId,
     type UpdateCanvasDataResponse,
+    UpdateCanvasDataResponseSchema,
 } from '@/shared/apiTypes.ts';
 import {
     performSafeJsonParse,

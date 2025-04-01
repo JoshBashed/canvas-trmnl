@@ -1,9 +1,9 @@
-import { z } from 'zod';
 import {
     createSearchParams,
     performSafeJsonParse,
     performSafeRequest,
 } from '@/shared/utilities/fetchUtilities.ts';
+import { z } from 'zod';
 
 export interface CanvasConfig {
     token: string;

@@ -1,21 +1,4 @@
-import { eq } from 'drizzle-orm';
-import { Hono } from 'hono';
-import { z } from 'zod';
-import { db } from '@/server/db/index.ts';
-import {
-    canvasTokens,
-    consumers,
-    trmnlAuthorizationTokens,
-    trmnlData,
-} from '@/server/db/schema.ts';
-import { createLogger } from '@/shared/utilities/loggingUtilities.ts';
-import {
-    preformSafeContextBodyParse,
-    preformSafeContextJsonParse,
-} from '@/server/utilities/honoUtilities.ts';
-import { renderToString } from 'react-dom/server';
 import { TrmnlDisplay, TrmnlDisplayError } from '@/server/TrmnlDisplay.tsx';
-import React from 'react';
 import {
     type CanvasConfig,
     type CanvasCourseAssignmentsErrors,
@@ -23,6 +6,23 @@ import {
     fetchCourseAssignments,
     fetchCourses,
 } from '@/server/apiClients/canvasApiClient.ts';
+import { db } from '@/server/db/index.ts';
+import {
+    canvasTokens,
+    consumers,
+    trmnlAuthorizationTokens,
+    trmnlData,
+} from '@/server/db/schema.ts';
+import {
+    preformSafeContextBodyParse,
+    preformSafeContextJsonParse,
+} from '@/server/utilities/honoUtilities.ts';
+import { createLogger } from '@/shared/utilities/loggingUtilities.ts';
+import { eq } from 'drizzle-orm';
+import { Hono } from 'hono';
+import React from 'react';
+import { renderToString } from 'react-dom/server';
+import { z } from 'zod';
 
 const logger = createLogger('@/server/trmnlController');
 

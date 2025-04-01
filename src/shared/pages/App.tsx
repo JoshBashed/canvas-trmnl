@@ -1,8 +1,8 @@
 import { ServerPage } from '@/shared/components/ServerPage.tsx';
-import { Home } from '@/shared/pages/Home.tsx';
 import { Help } from '@/shared/pages/Help.tsx';
-import { NotFound } from '@/shared/pages/NotFound.tsx';
+import { Home } from '@/shared/pages/Home.tsx';
 import { Manage } from '@/shared/pages/Manage.tsx';
+import { NotFound } from '@/shared/pages/NotFound.tsx';
 import { OauthCreate } from '@/shared/pages/oauth/Create.tsx';
 import React, { type FC } from 'react';
 import { BrowserRouter, Route, Routes, StaticRouter } from 'react-router';

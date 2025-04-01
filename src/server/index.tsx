@@ -1,3 +1,7 @@
+import fs from 'node:fs';
+import fsPromises from 'node:fs/promises';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { createAppApiRoutes } from '@/server/controllers/apiController.ts';
 import { createTrmnlRoutes } from '@/server/controllers/trmnlController.tsx';
 import { ServerApp } from '@/shared/pages/App.tsx';
@@ -5,10 +9,6 @@ import { createLogger } from '@/shared/utilities/loggingUtilities.ts';
 import { serve } from '@hono/node-server';
 import { Hono } from 'hono';
 import { serveStatic } from 'hono/serve-static';
-import fs from 'node:fs';
-import fsPromises from 'node:fs/promises';
-import path from 'node:path';
-import { fileURLToPath } from 'node:url';
 import React from 'react';
 import { renderToString } from 'react-dom/server';
 import { appEnv } from './appEnv.ts';

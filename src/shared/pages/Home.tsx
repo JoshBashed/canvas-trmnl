@@ -1,5 +1,5 @@
-import React from 'react';
 import { Footer } from '@/shared/components/Footer.tsx';
+import React from 'react';
 
 export const Home = () => {
     return (

@@ -1,8 +1,8 @@
-import { z } from 'zod';
 import {
     performSafeJsonParse,
     performSafeRequest,
 } from '@/shared/utilities/fetchUtilities.ts';
+import { z } from 'zod';
 
 const TRMNL_BASE_URL = 'https://usetrmnl.com';
 

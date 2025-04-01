@@ -1,14 +1,14 @@
-import { default as swc } from '@rollup/plugin-swc';
-import { default as resolve } from '@rollup/plugin-node-resolve';
-import { default as terser } from '@rollup/plugin-terser';
-import { default as postcss } from 'rollup-plugin-postcss';
-import { default as commonjs } from '@rollup/plugin-commonjs';
-import { default as replace } from '@rollup/plugin-replace';
-import { default as copy } from 'rollup-plugin-copy';
-import { default as alias } from '@rollup/plugin-alias';
-import { defineConfig } from 'rollup';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { default as alias } from '@rollup/plugin-alias';
+import { default as commonjs } from '@rollup/plugin-commonjs';
+import { default as resolve } from '@rollup/plugin-node-resolve';
+import { default as replace } from '@rollup/plugin-replace';
+import { default as swc } from '@rollup/plugin-swc';
+import { default as terser } from '@rollup/plugin-terser';
+import { defineConfig } from 'rollup';
+import { default as copy } from 'rollup-plugin-copy';
+import { default as postcss } from 'rollup-plugin-postcss';
 
 const currentDir = dirname(fileURLToPath(import.meta.url));
 

@@ -1,18 +1,5 @@
-import { Hono } from 'hono';
-import {
-    type GlobalErrorResponse,
-    CreateConsumerRequestId,
-    CreateConsumerRequestSchema,
-    type CreateConsumerResponseSchema,
-    GlobalRequestSchema,
-    UpdateCanvasDataRequestSchema,
-    type UpdateCanvasDataResponseSchema,
-    UpdateCanvasDataRequestId,
-} from '@/shared/apiTypes.ts';
-import type { z, ZodType } from 'zod';
 import { fetchTrmnlOAuthToken } from '@/server/apiClients/trmnlApiClient.ts';
 import { appEnv } from '@/server/appEnv.ts';
-import { createLogger } from '@/shared/utilities/loggingUtilities.ts';
 import { db } from '@/server/db/index.ts';
 import {
     canvasTokens,
@@ -20,7 +7,20 @@ import {
     trmnlData,
 } from '@/server/db/schema.ts';
 import { preformSafeContextJsonParse } from '@/server/utilities/honoUtilities.ts';
+import {
+    CreateConsumerRequestId,
+    CreateConsumerRequestSchema,
+    type CreateConsumerResponseSchema,
+    type GlobalErrorResponse,
+    GlobalRequestSchema,
+    UpdateCanvasDataRequestId,
+    UpdateCanvasDataRequestSchema,
+    type UpdateCanvasDataResponseSchema,
+} from '@/shared/apiTypes.ts';
+import { createLogger } from '@/shared/utilities/loggingUtilities.ts';
 import { eq } from 'drizzle-orm';
+import { Hono } from 'hono';
+import type { ZodType, z } from 'zod';
 
 const logger = createLogger('@/server/apiController');
 
