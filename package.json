@@ -2,14 +2,18 @@
     "name": "canvas-trmnl",
     "version": "1.0.0",
     "description": "Instructure Canvas LMS TRMNL plugin.",
-    "keywords": ["canvas", "lms", "trmnl"],
+    "keywords": [
+        "canvas",
+        "lms",
+        "trmnl"
+    ],
     "author": "JoshuaBrest <36625023+JoshuaBrest@users.noreply.github.com>",
     "license": "ISC",
     "packageManager": "pnpm@10.6.5",
     "main": "dist/index.cjs",
     "type": "module",
     "scripts": {
-        "start": "node --env-file .env .",
+        "start": "node .",
         "format": "biome format --write",
         "format:check": "biome format --check",
         "lint": "biome lint --write",
@@ -35,7 +39,11 @@
         "zod": "^3.24.2"
     },
     "pnpm": {
-        "onlyBuiltDependencies": ["@biomejs/biome", "@swc/core", "esbuild"]
+        "onlyBuiltDependencies": [
+            "@biomejs/biome",
+            "@swc/core",
+            "esbuild"
+        ]
     },
     "devDependencies": {
         "@rollup/plugin-alias": "^5.1.1",
