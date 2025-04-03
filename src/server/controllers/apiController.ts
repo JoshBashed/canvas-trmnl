@@ -184,6 +184,7 @@ const updateCanvasData: RouteData<
         // Done :)
         return {
             type: 'success',
+            trmnlSettingsId: trmnlDataRow.settingsId,
         };
     },
 };

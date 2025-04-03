@@ -39,6 +39,7 @@ export const UpdateCanvasDataResponseSchema = z.union([
     }),
     z.object({
         type: z.literal('success'),
+        trmnlSettingsId: z.number(),
     }),
 ]);
 export type UpdateCanvasDataResponse = z.infer<

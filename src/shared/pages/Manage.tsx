@@ -8,6 +8,7 @@ export const Manage: FC = () => {
     const [canvasToken, setCanvasToken] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const [success, setSuccess] = useState(false);
+    const [trmnlSettingsId, setTrmnlSettingsId] = useState<string | null>(null);
     const [error, setError] = useState<string | null>(null);
     const params = useParams();
 
@@ -42,23 +43,40 @@ export const Manage: FC = () => {
                         />
                     </div>
 
-                    <div className='flex flex-col gap-2'>
-                        <label
-                            htmlFor='canvas-token'
-                            className='text-sm text-zinc-400'
-                        >
-                            canvas token
-                        </label>
-                        <input
-                            type='text'
-                            id='canvas-token'
-                            placeholder='your_canvas_token'
-                            disabled={isLoading}
-                            value={canvasToken}
-                            onChange={(e) => setCanvasToken(e.target.value)}
-                            className='rounded border border-zinc-700 bg-zinc-900 px-4 py-2 text-white placeholder-zinc-500 transition disabled:bg-zinc-800/50'
-                        />
-                    </div>
+                    {canvasServer !== '' && (
+                        <div className='flex flex-col gap-2'>
+                            <label
+                                htmlFor='canvas-token'
+                                className='text-sm text-zinc-400'
+                            >
+                                canvas token
+                            </label>
+                            <input
+                                type='text'
+                                id='canvas-token'
+                                placeholder='your_canvas_token'
+                                disabled={isLoading}
+                                value={canvasToken}
+                                onChange={(e) => setCanvasToken(e.target.value)}
+                                className='rounded border border-zinc-700 bg-zinc-900 px-4 py-2 text-white placeholder-zinc-500 transition disabled:bg-zinc-800/50'
+                            />
+                            <p className='text-sm text-zinc-400'>
+                                find your token{' '}
+                                <a
+                                    href={`https://${canvasServer}/profile/settings`}
+                                    target='_blank'
+                                    rel='noreferrer'
+                                    className='underline'
+                                >
+                                    here
+                                </a>
+                                . then select <b>New Access Token</b>.{' '}
+                                <span className='text-red-500'>
+                                    do not share your token with anyone.
+                                </span>
+                            </p>
+                        </div>
+                    )}
 
                     {success && (
                         <div className='text-right text-green-500 text-sm'>
@@ -72,6 +90,20 @@ export const Manage: FC = () => {
                     )}
 
                     <div className='flex items-center justify-end gap-2'>
+                        {trmnlSettingsId && (
+                            <button
+                                type='button'
+                                className='cursor-pointer rounded-full bg-white px-6 py-2 font-semibold text-black transition hover:underline disabled:cursor-not-allowed disabled:bg-zinc-300'
+                                onClick={() => {
+                                    window.open(
+                                        `https://usetrmnl.com/plugin_settings/${encodeURIComponent(trmnlSettingsId)}/edit`,
+                                        '_self',
+                                    );
+                                }}
+                            >
+                                return to trmnl
+                            </button>
+                        )}
                         {isLoading && <LoadingIcon />}
                         <button
                             type='button'
