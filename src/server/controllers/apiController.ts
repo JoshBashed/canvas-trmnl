@@ -20,7 +20,7 @@ import {
 import { createLogger } from '@/shared/utilities/loggingUtilities.ts';
 import { eq } from 'drizzle-orm';
 import { Hono } from 'hono';
-import type { ZodType, z } from 'zod';
+import type { z } from 'zod';
 
 const logger = createLogger('@/server/apiController');
 
@@ -31,7 +31,7 @@ const createGlobalError = (
     ...data,
 });
 
-interface RouteData<Request extends ZodType, Response extends ZodType> {
+interface RouteData<Request extends z.ZodType, Response extends z.ZodType> {
     requestSchema: Request;
     procedure: (data: z.infer<Request>) => Promise<z.infer<Response>>;
 }
@@ -189,13 +189,22 @@ const updateCanvasData: RouteData<
     },
 };
 
+const stripZodTypes = <Request extends z.ZodType, Response extends z.ZodType>(
+    data: RouteData<Request, Response>,
+): RouteData<z.ZodType, z.ZodType> => {
+    return {
+        requestSchema: data.requestSchema as z.ZodType,
+        procedure: data.procedure,
+    };
+};
+
 const PROCEDURES: Record<
     z.infer<typeof GlobalRequestSchema>['procedure'],
     RouteData<z.ZodType, z.ZodType>
 > = {
-    [CreateConsumerRequestId]: createConsumer,
-    [UpdateCanvasDataRequestId]: updateCanvasData,
-} as const;
+    [CreateConsumerRequestId]: stripZodTypes(createConsumer),
+    [UpdateCanvasDataRequestId]: stripZodTypes(updateCanvasData),
+};
 
 export const createAppApiRoutes = (): Hono => {
     const app = new Hono();

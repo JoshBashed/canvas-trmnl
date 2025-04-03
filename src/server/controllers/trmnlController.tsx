@@ -20,7 +20,7 @@ import {
 import { createLogger } from '@/shared/utilities/loggingUtilities.ts';
 import { eq } from 'drizzle-orm';
 import { Hono } from 'hono';
-import React from 'react';
+import React, { type FC } from 'react';
 import { renderToString } from 'react-dom/server';
 import { z } from 'zod';
 
@@ -619,13 +619,20 @@ export const createTrmnlRoutes = (): Hono => {
             return c.text('Failed to query the database.', 500);
         }
 
-        const renderAll = (children: React.ReactNode) => {
-            const render = renderToString(children);
+        const renderAll = (
+            Child: FC<{
+                layout: 'full' | 'halfVertical' | 'halfHorizontal' | 'quadrant';
+            }>,
+        ) => {
             return {
-                markup: render,
-                markup_half_vertical: render,
-                markup_half_horizontal: render,
-                markup_quadrant: render,
+                markup: renderToString(<Child layout='full' />),
+                markup_half_vertical: renderToString(
+                    <Child layout='halfVertical' />,
+                ),
+                markup_half_horizontal: renderToString(
+                    <Child layout='halfHorizontal' />,
+                ),
+                markup_quadrant: renderToString(<Child layout='quadrant' />),
             } as const;
         };
 
@@ -634,9 +641,9 @@ export const createTrmnlRoutes = (): Hono => {
                 'Returning error markup for /generate/ with no canvas token.',
             );
             return c.json(
-                renderAll(
-                    <TrmnlDisplayError errorMessage='plugin is not configured :(' />,
-                ),
+                renderAll(() => (
+                    <TrmnlDisplayError errorMessage='plugin is not configured :(' />
+                )),
             );
         }
         const canvasData = canvasQuery[0];
@@ -655,21 +662,22 @@ export const createTrmnlRoutes = (): Hono => {
                 'Returning error markup for /generate/ with canvas error.',
             );
             return c.json(
-                renderAll(
+                renderAll(() => (
                     <TrmnlDisplayError
                         errorMessage={`canvas error: ${canvasDataResult.error}`}
-                    />,
-                ),
+                    />
+                )),
             );
         }
 
         return c.json(
-            renderAll(
+            renderAll(({ layout }) => (
                 <TrmnlDisplay
                     courses={canvasDataResult.courses}
                     assignments={canvasDataResult.assignments}
-                />,
-            ),
+                    layout={layout}
+                />
+            )),
         );
     });
 

@@ -10,6 +10,8 @@
     "type": "module",
     "scripts": {
         "start": "node .",
+        "typecheck": "tsc --noEmit",
+        "check": "biome check --write",
         "format": "biome format --write",
         "format:check": "biome format --check",
         "lint": "biome lint --write",
@@ -31,7 +33,7 @@
         "react": "^19.1.0",
         "react-dom": "^19.1.0",
         "react-router": "^7.4.1",
-        "rollup": "^4.38.0",
+        "rollup": "^4.39.0",
         "zod": "^3.24.2"
     },
     "pnpm": {
@@ -44,16 +46,17 @@
         "@rollup/plugin-replace": "^6.0.2",
         "@rollup/plugin-swc": "^0.4.0",
         "@rollup/plugin-terser": "^0.4.4",
-        "@swc/core": "^1.11.13",
-        "@tailwindcss/postcss": "^4.0.17",
+        "@swc/core": "^1.11.16",
+        "@tailwindcss/postcss": "^4.1.1",
         "@types/pg": "^8.11.11",
-        "@types/react": "^19.0.12",
-        "@types/react-dom": "^19.0.4",
+        "@types/react": "^19.1.0",
+        "@types/react-dom": "^19.1.1",
         "concurrently": "^9.1.2",
         "drizzle-kit": "^0.30.6",
         "postcss": "^8.5.3",
         "rollup-plugin-copy": "^3.5.0",
         "rollup-plugin-postcss": "^4.0.2",
-        "tailwindcss": "^4.0.17"
+        "tailwindcss": "^4.1.1",
+        "typescript": "^5.8.2"
     }
 }

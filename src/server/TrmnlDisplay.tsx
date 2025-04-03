@@ -77,11 +77,13 @@ interface TrmnlDisplayProps {
             dueAt: Date | null;
         }
     >;
+    layout: 'full' | 'halfVertical' | 'halfHorizontal' | 'quadrant';
 }
 
 export const TrmnlDisplay: FC<TrmnlDisplayProps> = ({
     courses,
     assignments,
+    layout,
 }) => {
     const currentTime = new Date();
     const earliestAssignments = Array.from(assignments.values())
@@ -90,14 +92,22 @@ export const TrmnlDisplay: FC<TrmnlDisplayProps> = ({
             (a, b) =>
                 (a.dueAt ?? new Date(0)).getTime() -
                 (b.dueAt ?? new Date(0)).getTime(),
-        )
-        .slice(0, 6);
+        );
 
     return (
         <>
             <div className='layout'>
                 <div className='columns'>
-                    <div className='column'>
+                    <div
+                        className='column'
+                        data-list-limit='true'
+                        data-list-max-height={
+                            layout === 'full' || layout === 'halfVertical'
+                                ? '340'
+                                : '160'
+                        }
+                        data-list-hidden-count='true'
+                    >
                         {earliestAssignments.map((item, index) => {
                             return (
                                 <div className='item' key={item.id}>
