@@ -79,6 +79,7 @@ const getAssignmentsForCanvasConfig = async (
 
     const coursesData = new Map<number, { id: number; name: string }>();
     for (const course of courses) {
+        if (!course.name) continue;
         coursesData.set(course.id, { id: course.id, name: course.name });
     }
 

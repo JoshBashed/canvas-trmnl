@@ -14,7 +14,7 @@ export interface CanvasConfig {
 
 const CanvasCourseSchema = z.object({
     id: z.number(),
-    name: z.string(),
+    name: z.string().optional(),
 });
 const CanvasCoursesSchema = z.array(CanvasCourseSchema);
 export interface CoursesRequest {
