@@ -18,9 +18,41 @@ export type CreateConsumerResponse = z.infer<
     typeof CreateConsumerResponseSchema
 >;
 
-export const UpdateCanvasDataRequestId = '856c99bd-6ad7-4b7e-a0df-3e219ca622e2';
+export const FetchConsumerDataRequestId =
+    '776eee94-2de5-44cb-bbed-1e1f65a68d73';
+export const FetchConsumerDataRequestSchema = z.object({
+    trmnlId: z.string().uuid(),
+    authToken: z.string(),
+});
+export type FetchConsumerDataRequest = z.infer<
+    typeof FetchConsumerDataRequestSchema
+>;
+export const FetchConsumerDataResponseSchema = z.union([
+    z.object({
+        type: z.literal('error'),
+        error: z.enum([
+            'authenticationError',
+            'consumerNotFoundError',
+            'databaseQueryError',
+        ]),
+    }),
+    z.object({
+        type: z.literal('success'),
+        data: z.object({
+            name: z.string(),
+            trmnlId: z.string().uuid(),
+            settingsId: z.number(),
+        }),
+    }),
+]);
+export type FetchConsumerDataResponse = z.infer<
+    typeof FetchConsumerDataResponseSchema
+>;
+
+export const UpdateCanvasDataRequestId = 'e6d25226-fc23-45b9-bbd7-4e74f44285e6';
 export const UpdateCanvasDataRequestSchema = z.object({
     trmnlId: z.string().uuid(),
+    authToken: z.string(),
     canvasServer: z.string().url(),
     canvasAccessToken: z.string(),
 });
@@ -31,6 +63,7 @@ export const UpdateCanvasDataResponseSchema = z.union([
     z.object({
         type: z.literal('error'),
         error: z.enum([
+            'authenticationError',
             'invalidUrlError',
             'consumerNotFoundError',
             'databaseQueryError',
@@ -39,7 +72,6 @@ export const UpdateCanvasDataResponseSchema = z.union([
     }),
     z.object({
         type: z.literal('success'),
-        trmnlSettingsId: z.number(),
     }),
 ]);
 export type UpdateCanvasDataResponse = z.infer<
@@ -47,7 +79,11 @@ export type UpdateCanvasDataResponse = z.infer<
 >;
 
 export const GlobalRequestSchema = z.object({
-    procedure: z.enum([CreateConsumerRequestId, UpdateCanvasDataRequestId]),
+    procedure: z.enum([
+        CreateConsumerRequestId,
+        FetchConsumerDataRequestId,
+        UpdateCanvasDataRequestId,
+    ]),
     data: z.any().optional(),
 });
 export type GlobalRequest = z.infer<typeof GlobalRequestSchema>;

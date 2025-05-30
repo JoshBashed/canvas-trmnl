@@ -2,14 +2,87 @@ import {
     performSafeJsonParse,
     performSafeRequest,
 } from '@/shared/utilities/fetchUtilities.ts';
+import { createLogger } from '@/shared/utilities/loggingUtilities.ts';
+import * as jose from 'jose';
 import { z } from 'zod';
 
+const logger = createLogger('@/server/apiClients/trmnlApiClient');
+
 const TRMNL_BASE_URL = 'https://usetrmnl.com';
+const TRMNL_JWK_URL = `${TRMNL_BASE_URL}/.well-known/jwks.json`;
+const JWK_CACHE_TTL = 4 * 60 * 60 * 1000; // 4 hour in milliseconds
 
 const TrmnlErrorResponseSchema = z.object({
     error: z.literal(true),
     message: z.string(),
 });
+export type TrmnlErrorResponse = z.infer<typeof TrmnlErrorResponseSchema>;
+class TrmnlCachedJWK {
+    private static shared: TrmnlCachedJWK = new TrmnlCachedJWK();
+    private jwks: Awaited<ReturnType<typeof jose.createRemoteJWKSet>> | null =
+        null;
+    private lastUpdate = 0;
+
+    private constructor() {}
+
+    public static getShared(): TrmnlCachedJWK {
+        return TrmnlCachedJWK.shared;
+    }
+
+    private needsUpdate(): boolean {
+        const now = Date.now();
+        return this.lastUpdate + JWK_CACHE_TTL < now;
+    }
+
+    private async initializeJWKSet(): Promise<void> {
+        this.jwks = jose.createRemoteJWKSet(new URL(TRMNL_JWK_URL));
+    }
+
+    public async verifyToken(
+        token: string,
+    ): Promise<jose.JWTVerifyResult | false> {
+        if (this.jwks === null) {
+            await this.initializeJWKSet();
+            this.lastUpdate = Date.now();
+        }
+        if (!this.jwks) {
+            logger.error('JWKs are not initialized.');
+            return false;
+        }
+
+        if (this.needsUpdate()) {
+            logger.info('JWKs cache is stale, reinitializing.');
+            try {
+                await this.jwks.reload();
+            } catch (error) {
+                logger.error(
+                    'Failed to reload JWKs: %s',
+                    error instanceof Error ? error.message : String(error),
+                );
+                return false;
+            }
+            this.lastUpdate = Date.now();
+        }
+
+        try {
+            const verified = await jose.jwtVerify(token, this.jwks);
+            return verified;
+        } catch (error) {
+            logger.error(
+                'Failed to verify token: %s',
+                error instanceof Error ? error.message : String(error),
+            );
+            return false;
+        }
+    }
+}
+
+export const verifyTrmnlToken = async (
+    token: string,
+): Promise<jose.JWTVerifyResult | false> => {
+    const jwkSet = TrmnlCachedJWK.getShared();
+    return await jwkSet.verifyToken(token);
+};
 
 // OauthToken
 const TrmnlOAuthTokenSuccessResponseSchema = z.object({
