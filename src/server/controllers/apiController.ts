@@ -1,4 +1,7 @@
-import { fetchTrmnlOAuthToken } from '@/server/apiClients/trmnlApiClient.ts';
+import {
+    fetchTrmnlOAuthToken,
+    verifyTrmnlToken,
+} from '@/server/apiClients/trmnlApiClient.ts';
 import { appEnv } from '@/server/appEnv.ts';
 import { db } from '@/server/db/index.ts';
 import {
@@ -6,11 +9,14 @@ import {
     trmnlAuthorizationTokens,
     trmnlData,
 } from '@/server/db/schema.ts';
-import { preformSafeContextJsonParse } from '@/server/utilities/honoUtilities.ts';
+import { performSafeContextJsonParse } from '@/server/utilities/honoUtilities.ts';
 import {
     CreateConsumerRequestId,
     CreateConsumerRequestSchema,
     type CreateConsumerResponseSchema,
+    FetchConsumerDataRequestId,
+    FetchConsumerDataRequestSchema,
+    type FetchConsumerDataResponseSchema,
     type GlobalErrorResponse,
     GlobalRequestSchema,
     UpdateCanvasDataRequestId,
@@ -90,12 +96,93 @@ const createConsumer: RouteData<
     },
 };
 
+const fetchConsumerData: RouteData<
+    typeof FetchConsumerDataRequestSchema,
+    typeof FetchConsumerDataResponseSchema
+> = {
+    requestSchema: FetchConsumerDataRequestSchema,
+    procedure: async (data) => {
+        if (!(await verifyTrmnlToken(data.authToken))) {
+            // Verify the jwt token.
+            logger.info(
+                'Received invalid token while fetching consumer data: %s.',
+                data.authToken,
+            );
+            return {
+                type: 'error',
+                error: 'authenticationError',
+            };
+        }
+
+        // Match the trmnlId to the consumer token.
+        const [trmnlDataQuerySuccess, trmnlDataQuery]:
+            | [true, Array<typeof trmnlData.$inferSelect>]
+            | [false, undefined] = await db
+            .select()
+            .from(trmnlData)
+            .where(eq(trmnlData.trmnlId, data.trmnlId))
+            .execute()
+            .then(
+                (result) =>
+                    [true, result] as [
+                        true,
+                        Array<typeof trmnlData.$inferSelect>,
+                    ],
+            )
+            .catch((error) => {
+                logger.error(
+                    'Failed to query trmnl data while fetching consumer data: %s',
+                    error instanceof Error ? error.message : error,
+                );
+                return [false, undefined] as const;
+            });
+
+        if (!trmnlDataQuerySuccess) {
+            return {
+                type: 'error',
+                error: 'databaseQueryError',
+            };
+        }
+
+        if (trmnlDataQuery.length === 0) {
+            return {
+                type: 'error',
+                error: 'consumerNotFoundError',
+            };
+        }
+
+        const trmnlDataRow = trmnlDataQuery[0];
+
+        // Return the consumer data.
+        return {
+            type: 'success',
+            data: {
+                name: trmnlDataRow.name,
+                trmnlId: trmnlDataRow.trmnlId,
+                settingsId: trmnlDataRow.settingsId,
+            },
+        };
+    },
+};
+
 const updateCanvasData: RouteData<
     typeof UpdateCanvasDataRequestSchema,
     typeof UpdateCanvasDataResponseSchema
 > = {
     requestSchema: UpdateCanvasDataRequestSchema,
     procedure: async (data) => {
+        if (!(await verifyTrmnlToken(data.authToken))) {
+            // Verify the jwt token.
+            logger.info(
+                'Received invalid token while updating canvas data: %s.',
+                data.authToken,
+            );
+            return {
+                type: 'error',
+                error: 'authenticationError',
+            };
+        }
+
         // Match the trmnlId to the consumer token.
         const [trmnlDataQuerySuccess, trmnlDataQuery]:
             | [true, Array<typeof trmnlData.$inferSelect>]
@@ -184,7 +271,6 @@ const updateCanvasData: RouteData<
         // Done :)
         return {
             type: 'success',
-            trmnlSettingsId: trmnlDataRow.settingsId,
         };
     },
 };
@@ -203,6 +289,7 @@ const PROCEDURES: Record<
     RouteData<z.ZodType, z.ZodType>
 > = {
     [CreateConsumerRequestId]: stripZodTypes(createConsumer),
+    [FetchConsumerDataRequestId]: stripZodTypes(fetchConsumerData),
     [UpdateCanvasDataRequestId]: stripZodTypes(updateCanvasData),
 };
 
@@ -210,7 +297,7 @@ export const createAppApiRoutes = (): Hono => {
     const app = new Hono();
 
     app.post('/performAction', async (c) => {
-        const [jsonSuccess, json] = await preformSafeContextJsonParse(c);
+        const [jsonSuccess, json] = await performSafeContextJsonParse(c);
         if (!jsonSuccess) {
             return c.json(createGlobalError({ error: 'jsonParseError' }), 400);
         }

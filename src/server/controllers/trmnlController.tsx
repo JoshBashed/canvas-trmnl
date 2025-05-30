@@ -14,8 +14,8 @@ import {
     trmnlData,
 } from '@/server/db/schema.ts';
 import {
-    preformSafeContextBodyParse,
-    preformSafeContextJsonParse,
+    performSafeContextBodyParse,
+    performSafeContextJsonParse,
 } from '@/server/utilities/honoUtilities.ts';
 import { createLogger } from '@/shared/utilities/loggingUtilities.ts';
 import { eq } from 'drizzle-orm';
@@ -210,7 +210,15 @@ export const createTrmnlRoutes = (): Hono => {
             return c.text('Missing uuid.', 400);
         }
 
-        return c.redirect(`/app/manage/${encodeURIComponent(code)}/`);
+        // Get the JWT token from the request.
+        const jwt = c.req.query('jwt');
+        if (!jwt) {
+            return c.text('Missing jwt.', 400);
+        }
+
+        return c.redirect(
+            `/app/manage/${encodeURIComponent(code)}/?token=${encodeURIComponent(jwt)}`,
+        );
     });
 
     const WebhookInstallSchema = z
@@ -259,7 +267,7 @@ export const createTrmnlRoutes = (): Hono => {
         }
 
         // Parse the request body.
-        const [jsonSuccess, json] = await preformSafeContextJsonParse(c);
+        const [jsonSuccess, json] = await performSafeContextJsonParse(c);
         if (!jsonSuccess) {
             logger.info(
                 'Ignored request to /webhook/install/ with invalid JSON.',
@@ -406,7 +414,7 @@ export const createTrmnlRoutes = (): Hono => {
         }
 
         // Parse the request body.
-        const [jsonSuccess, json] = await preformSafeContextJsonParse(c);
+        const [jsonSuccess, json] = await performSafeContextJsonParse(c);
         if (!jsonSuccess) {
             logger.info(
                 'Ignored request to /webhook/uninstall/ with invalid JSON.',
@@ -542,7 +550,7 @@ export const createTrmnlRoutes = (): Hono => {
         }
 
         // Parse the body as application/x-www-form-urlencoded
-        const [formSuccess, form] = await preformSafeContextBodyParse(c);
+        const [formSuccess, form] = await performSafeContextBodyParse(c);
         if (!formSuccess) {
             logger.info('Ignored request to /generate/ with invalid form.');
             return c.text('Invalid form.', 400);

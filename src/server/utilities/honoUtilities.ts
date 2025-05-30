@@ -1,6 +1,6 @@
 import type { Context } from 'hono';
 
-export const preformSafeContextJsonParse = async (
+export const performSafeContextJsonParse = async (
     c: Context,
 ): Promise<[true, unknown] | [false, undefined]> => {
     try {
@@ -11,7 +11,7 @@ export const preformSafeContextJsonParse = async (
     }
 };
 
-export const preformSafeContextBodyParse = async (
+export const performSafeContextBodyParse = async (
     c: Context,
 ): Promise<[true, unknown] | [false, undefined]> => {
     try {
