@@ -20,6 +20,9 @@ importers:
       hono:
         specifier: ^4.7.5
         version: 4.7.5
+      jose:
+        specifier: ^6.0.11
+        version: 6.0.11
       pg:
         specifier: ^8.14.1
         version: 8.14.1
@@ -1277,6 +1280,9 @@ packages:
   jiti@2.4.2:
     resolution: {integrity: sha512-rg9zJN+G4n2nfJl5MW3BMygZX56zKPNVEYYqq7adpmMh4Jn2QNEwhvQlFy6jPVdcod7txZtKHWnyZiA3a0zP7A==}
     hasBin: true
+
+  jose@6.0.11:
+    resolution: {integrity: sha512-QxG7EaliDARm1O1S8BGakqncGT9s25bKL1WSf6/oa17Tkqwi8D2ZNglqCF+DsYF88/rV66Q/Q2mFAy697E1DUg==}
 
   jsonfile@4.0.0:
     resolution: {integrity: sha512-m6F1R3z8jjlf2imQHS2Qez5sjKWQzbuuhuJ/FKYFRZvPE3PuHcSMVZzfsLhGVOkfd20obL5SWEBew5ShlquNxg==}
@@ -2892,6 +2898,8 @@ snapshots:
   isexe@3.1.1: {}
 
   jiti@2.4.2: {}
+
+  jose@6.0.11: {}
 
   jsonfile@4.0.0:
     optionalDependencies:
