@@ -6,7 +6,7 @@ export const Footer: FC = () => {
             <div className='flex w-full max-w-4xl gap-2 text-sm text-zinc-400'>
                 <div className='flex flex-col gap-2'>
                     <span>
-                        made with love by{' '}
+                        Made by{' '}
                         <a
                             href='https://github.com/JoshuaBrest/'
                             className='underline'
@@ -23,7 +23,7 @@ export const Footer: FC = () => {
                         href='https://github.com/JoshuaBrest/canvas-trmnl'
                         className='underline'
                     >
-                        view on github
+                        GitHub
                     </a>
                 </div>
             </div>

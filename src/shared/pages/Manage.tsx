@@ -74,9 +74,9 @@ export const Manage: FC = () => {
         >
             {consumerData === null && error === null && <LoadingIcon />}
             {error && (
-                <div className='flex w-full max-w-md flex-col gap-4 rounded-md border border-zinc-700 bg-zinc-900 p-8 text-center shadow'>
+                <div className='flex w-full max-w-md flex-col gap-2 rounded-md border border-zinc-700 bg-zinc-900 p-8 shadow'>
                     <h2 className='font-bold font-display text-2xl tracking-tight'>
-                        error
+                        Error
                     </h2>
                     <p className='text-sm text-zinc-400'>{error}</p>
                 </div>
@@ -126,21 +126,16 @@ export const ManagePage: FC<{
                             clipRule='evenodd'
                         />
                     </svg>
-                    back to trmnl
+                    Back to settings
                 </a>
                 <span className='text-sm text-zinc-400'>
                     {props.name} ({props.trmnlSettingsId})
                 </span>
             </div>
 
-            <div className='flex flex-col gap-2'>
-                <h1 className='font-bold font-display text-4xl tracking-tight'>
-                    manage plugin
-                </h1>
-                <p className='text-sm text-zinc-400'>
-                    update your canvas connection settings.
-                </p>
-            </div>
+            <h1 className='font-bold font-display text-4xl tracking-tight'>
+                Settings
+            </h1>
 
             <div className='flex flex-col gap-6'>
                 <div className='flex flex-col gap-2'>
@@ -148,7 +143,7 @@ export const ManagePage: FC<{
                         htmlFor='canvas-server'
                         className='text-sm text-zinc-400'
                     >
-                        canvas server domain
+                        Canvas Server (domain)
                     </label>
                     <input
                         type='text'
@@ -167,7 +162,7 @@ export const ManagePage: FC<{
                             htmlFor='canvas-token'
                             className='text-sm text-zinc-400'
                         >
-                            canvas token
+                            Canvas Access Token
                         </label>
                         <input
                             type='text'
@@ -179,7 +174,7 @@ export const ManagePage: FC<{
                             className='rounded border border-zinc-700 bg-zinc-900 px-4 py-2 text-white placeholder-zinc-500 transition disabled:bg-zinc-800/50'
                         />
                         <p className='text-sm text-zinc-400'>
-                            find your token{' '}
+                            Find your token{' '}
                             <a
                                 href={`https://${canvasServer}/profile/settings`}
                                 target='_blank'
@@ -188,9 +183,9 @@ export const ManagePage: FC<{
                             >
                                 here
                             </a>
-                            . then select <b>New Access Token</b>.{' '}
+                            . Then select <b>New Access Token</b>.{' '}
                             <span className='text-red-500'>
-                                do not share your token with anyone.
+                                Do not share your token with anyone.
                             </span>
                         </p>
                     </div>
@@ -198,7 +193,7 @@ export const ManagePage: FC<{
 
                 {success && (
                     <div className='text-right text-green-500 text-sm'>
-                        settings updated successfully.
+                        Settings updated successfully.
                     </div>
                 )}
                 {error && (
@@ -255,7 +250,7 @@ export const ManagePage: FC<{
                             if (data.type === 'success') setSuccess(true);
                         }}
                     >
-                        save settings
+                        Save
                     </button>
                 </div>
             </div>

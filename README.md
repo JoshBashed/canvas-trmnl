@@ -1,38 +1,42 @@
-# canvas-trmnl :3
+# Canvas-TRMNL
 
-a little plugin that connects your canvas data to trmnl.
+Show your assignments from Canvas LMS on your TRMNL.
 
-## what it do
+## What does it do?
 
-- pulls your assignments from canvas
-- shows them in trmnl
+- Fetches your assignments from Canvas.
+- Shows them as a TRMNL plugin.
 
-## how to use
+It's as simple as that.
 
-1. install the plugin from [here](https://usetrmnl.com/plugin_settings/new?keyname=canvas_lms)
-2. enter your canvas domain + access token (generate one in settings)
-3. trmnl will start showing your canvas data.
+## How to use it?
 
-## dev setup
+1. Install the plugin from [here](https://usetrmnl.com/plugin_settings/new?keyname=canvas_lms).
+2. Enter your canvas domain + access token (generate one in settings).
+3. TRMNL will start showing your Canvas data.
 
+## Development
+
+Clone the repo then run the following commands to start the development server:
 ```bash
 pnpm install
 pnpm dev
 ```
 
-## tech stack
-- hono (webserver)
-- react (frontend)
-- drizzle (orm)
-- postgres (db)
-- rollup (bundler)
+## Tech stack
 
-## contributing
+- Hono (webserver)
+- React (frontend)
+- Drizzle (orm)
+- Postgres (db)
+- Rollup (bundler)
 
-pull requests welcome.
+(hosted on Digital Ocean)
 
-## license
+## Contributing
 
-foss. isc. do what u want. just don’t make it ugly.
+Contributions are welcome!
 
-made with love by [josh](https://github.com/JoshuaBrest) :P
+## License
+
+Licensed under the ISC License. See the [LICENSE](LICENSE.md) file for details.

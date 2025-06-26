@@ -15,7 +15,7 @@ export const ServerPage: FC<ServerPageProps> = ({ title, head, children }) => {
                     name='viewport'
                     content='width=device-width, initial-scale=1.0'
                 />
-                <title>{`${title} - CanvasTRMNL`}</title>
+                <title>{`${title} - Canvas-TRMNL`}</title>
                 <link rel='stylesheet' href='/static/styles.css' />
                 <link rel='icon' href='/static/favicon.svg' />
                 <link rel='preconnect' href='https://fonts.googleapis.com' />

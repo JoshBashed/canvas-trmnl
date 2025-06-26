@@ -16,57 +16,56 @@ export const OauthCreate: FC = () => {
 
         if (!callbackURL) {
             setState('error');
-            setError('no callback URL provided.');
+            setError('No callback URL provided.');
             return;
         }
 
         if (!code) {
             setState('error');
-            setError('no code provided');
+            setError('No code provided.');
             return;
         }
 
         (async () => {
-            setStateText('making request... :3');
+            setStateText('Creating account...');
             const [success, response] = await performCreateConsumer({ code });
 
             if (!success) {
                 setState('error');
-                setError(`request failed: ${response}.`);
+                setError(`Request failed: ${response}.`);
                 return;
             }
 
             if (response.type === 'globalError') {
                 setState('error');
-                setError(`request failed (api error): ${response.error}.`);
+                setError(`Request failed (api error): ${response.error}.`);
                 return;
             }
 
             if (response.type === 'error') {
                 setState('error');
                 setError(
-                    `request failed (procedure error): ${response.error}.`,
+                    `Request failed (procedure error): ${response.error}.`,
                 );
                 return;
             }
 
             if (response.type === 'success') {
                 setState('success');
-                setStateText('redirecting you back to trmnl... ;P');
-                setTimeout(() => window.open(callbackURL, '_self'), 1000);
+                setTimeout(() => window.open(callbackURL, '_self'), 200);
             }
         })();
     }, []);
 
     return (
         <div className='flex min-h-screen items-center justify-center bg-radial-[circle_at_bottom] bg-zinc-950 from-indigo-800 to-80% p-8 text-white'>
-            <div className='flex w-full max-w-md flex-col gap-4 rounded-md border border-zinc-700 bg-zinc-900 p-8 text-center shadow'>
+            <div className='flex w-full max-w-md flex-col gap-2 rounded-md border border-zinc-700 bg-zinc-900 p-8 shadow'>
                 {state === 'loading' && (
                     <>
-                        <div className='flex items-center justify-center gap-2'>
+                        <div className='flex gap-2'>
                             <LoadingIcon />
                             <h1 className='font-bold font-display text-2xl tracking-tight'>
-                                authenticating...
+                                Authenticating...
                             </h1>
                         </div>
                         {stateText && (
@@ -77,7 +76,7 @@ export const OauthCreate: FC = () => {
                 {state === 'error' && (
                     <>
                         <h1 className='font-bold font-display text-2xl tracking-tight'>
-                            error.
+                            Error
                         </h1>
                         <p className='text-sm text-zinc-400'>{error}</p>
                     </>
@@ -85,10 +84,10 @@ export const OauthCreate: FC = () => {
                 {state === 'success' && (
                     <>
                         <h1 className='font-bold font-display text-2xl tracking-tight'>
-                            success!
+                            Success
                         </h1>
                         <p className='text-sm text-zinc-400'>
-                            redirecting you back to trmnl... ;P
+                            You will be redirected shortly.
                         </p>
                     </>
                 )}
