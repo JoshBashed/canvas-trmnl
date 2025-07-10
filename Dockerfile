@@ -2,7 +2,7 @@
 FROM node:20-alpine AS builder
 WORKDIR /app
 COPY . .
-RUN npm install -g pnpm && pnpm install && pnpm build:prod
+RUN npm install -g pnpm && pnpm install && pnpm build
 
 # final stage
 FROM node:20-alpine

@@ -1,10 +1,10 @@
+import * as jose from 'jose';
+import { z } from 'zod';
 import {
     performSafeJsonParse,
     performSafeRequest,
 } from '@/shared/utilities/fetchUtilities.ts';
 import { createLogger } from '@/shared/utilities/loggingUtilities.ts';
-import * as jose from 'jose';
-import { z } from 'zod';
 
 const logger = createLogger('@/server/apiClients/trmnlApiClient');
 
@@ -86,8 +86,8 @@ export const verifyTrmnlToken = async (
 
 // OauthToken
 const TrmnlOAuthTokenSuccessResponseSchema = z.object({
-    error: z.undefined(),
     access_token: z.string(),
+    error: z.undefined(),
 });
 export type TrmnlOAuthTokenSuccessResponse = z.infer<
     typeof TrmnlOAuthTokenSuccessResponseSchema
@@ -120,9 +120,9 @@ export const fetchTrmnlOAuthToken = async (
 > => {
     const url = new URL('/oauth/token', TRMNL_BASE_URL);
     const jsonRequest = {
-        code: request.code,
         client_id: request.clientId,
         client_secret: request.clientSecret,
+        code: request.code,
         grant_type: request.grantType,
     };
 
@@ -130,11 +130,11 @@ export const fetchTrmnlOAuthToken = async (
     const [responseSuccess, response] = await performSafeRequest(
         url.toString(),
         {
-            method: 'POST',
+            body: JSON.stringify(jsonRequest),
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify(jsonRequest),
+            method: 'POST',
         },
     );
 

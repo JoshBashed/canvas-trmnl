@@ -14,8 +14,8 @@ export const NotFound: FC = () => {
                     </p>
                 </div>
                 <a
-                    href='/'
                     className='inline-block rounded-full bg-white px-4 py-2 text-center font-semibold text-black hover:underline'
+                    href='/'
                 >
                     Return
                 </a>

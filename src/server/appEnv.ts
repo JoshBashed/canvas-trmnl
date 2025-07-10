@@ -42,8 +42,8 @@ export const appEnv: AppEnv = (() => {
     }
 
     return {
-        dev,
         databaseUrl,
+        dev,
         port,
         trmnl: {
             clientId: trmnlClientId,

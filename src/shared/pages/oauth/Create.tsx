@@ -1,6 +1,6 @@
+import React, { type FC, useEffect, useState } from 'react';
 import { LoadingIcon } from '@/shared/components/LoadingIcon.tsx';
-import { performCreateConsumer } from '@/shared/utilities/apiClient.ts';
-import React, { useEffect, useState, type FC } from 'react';
+import { apiClient } from '@/shared/utilities/apiClient.ts';
 
 export const OauthCreate: FC = () => {
     const [state, setState] = useState<'loading' | 'error' | 'success'>(
@@ -28,32 +28,22 @@ export const OauthCreate: FC = () => {
 
         (async () => {
             setStateText('Creating account...');
-            const [success, response] = await performCreateConsumer({ code });
+            const [dataResult, data] = await apiClient.createConsumer({ code });
 
-            if (!success) {
+            if (!dataResult) {
                 setState('error');
-                setError(`Request failed: ${response}.`);
+                setError(apiClient.formatError(data));
                 return;
             }
 
-            if (response.type === 'globalError') {
+            if (data.type === 'error') {
                 setState('error');
-                setError(`Request failed (api error): ${response.error}.`);
+                setError(`Error: ${data.data}.`);
                 return;
             }
 
-            if (response.type === 'error') {
-                setState('error');
-                setError(
-                    `Request failed (procedure error): ${response.error}.`,
-                );
-                return;
-            }
-
-            if (response.type === 'success') {
-                setState('success');
-                setTimeout(() => window.open(callbackURL, '_self'), 200);
-            }
+            setState('success');
+            setTimeout(() => window.open(callbackURL, '_self'), 200);
         })();
     }, []);
 

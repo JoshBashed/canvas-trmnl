@@ -1,23 +1,23 @@
+import React, { type FC } from 'react';
+import { BrowserRouter, Route, Routes, StaticRouter } from 'react-router';
 import { ServerPage } from '@/shared/components/ServerPage.tsx';
 import { Help } from '@/shared/pages/Help.tsx';
 import { Home } from '@/shared/pages/Home.tsx';
 import { Manage } from '@/shared/pages/Manage.tsx';
 import { NotFound } from '@/shared/pages/NotFound.tsx';
 import { OauthCreate } from '@/shared/pages/oauth/Create.tsx';
-import React, { type FC } from 'react';
-import { BrowserRouter, Route, Routes, StaticRouter } from 'react-router';
 
 const AppRoutes = () => {
     return (
         <Routes>
-            <Route path='*' element={<NotFound />} />
+            <Route element={<NotFound />} path='*' />
             <Route path='app'>
-                <Route index element={<Home />} />
-                <Route path='help' element={<Help />} />
+                <Route element={<Home />} index />
+                <Route element={<Help />} path='help' />
                 <Route path='oauth'>
-                    <Route path='create' element={<OauthCreate />} />
+                    <Route element={<OauthCreate />} path='create' />
                 </Route>
-                <Route path='manage/:id' element={<Manage />} />
+                <Route element={<Manage />} path='manage/:id' />
             </Route>
         </Routes>
     );

@@ -1,149 +1,158 @@
+import type { z } from "zod";
+import { API } from "@/shared/api/api.ts";
 import {
-    type CreateConsumerRequest,
-    CreateConsumerRequestId,
-    type CreateConsumerResponse,
-    CreateConsumerResponseSchema,
-    type FetchConsumerDataRequest,
-    FetchConsumerDataRequestId,
-    type FetchConsumerDataResponse,
-    FetchConsumerDataResponseSchema,
-    type GlobalErrorResponse,
-    GlobalErrorResponseSchema,
-    type GlobalRequest,
-    type UpdateCanvasDataRequest,
-    UpdateCanvasDataRequestId,
-    type UpdateCanvasDataResponse,
-    UpdateCanvasDataResponseSchema,
-} from '@/shared/apiTypes.ts';
+    type ProcedureErrorResponse,
+    ProcedureErrorResponseSchema,
+} from "@/shared/api/index.ts";
 import {
     performSafeJsonParse,
     performSafeRequest,
-} from '@/shared/utilities/fetchUtilities.ts';
+} from "@/shared/utilities/fetchUtilities.ts";
+import { createLogger } from "@/shared/utilities/loggingUtilities.ts";
 
-const API_URL = '/api/performAction';
+const API_URL = "/api/performAction";
 
-export const performCreateConsumer = async (
-    data: CreateConsumerRequest,
-): Promise<
-    | [true, GlobalErrorResponse | CreateConsumerResponse]
-    | [false, 'requestError' | 'jsonParseError' | 'schemaValidationError']
-> => {
-    const requestData: GlobalRequest = {
-        procedure: CreateConsumerRequestId,
-        data: data,
-    };
-    const [responseSuccess, response] = await performSafeRequest(API_URL, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(requestData),
-    });
+interface APIClientError {
+    type: "clientError";
+    data:
+        | "requestError"
+        | "jsonParseError"
+        | "schemaValidationError"
+        | "unknownError";
+}
 
-    if (!responseSuccess) {
-        return [false, 'requestError'];
-    }
+type ClientResponse<T extends keyof typeof API> =
+    | [true, z.infer<(typeof API)[T]["responseSchema"]>]
+    | [false, ProcedureErrorResponse]
+    | [false, APIClientError];
 
-    const [jsonSuccess, json] = await performSafeJsonParse(
-        await response.text(),
-    );
-    if (!jsonSuccess) {
-        return [false, 'jsonParseError'];
-    }
-
-    const parseResult = CreateConsumerResponseSchema.safeParse(json);
-    if (parseResult.success) {
-        return [true, parseResult.data];
-    }
-
-    const globalErrorParseResult = GlobalErrorResponseSchema.safeParse(json);
-    if (!globalErrorParseResult.success) {
-        return [false, 'schemaValidationError'];
-    }
-
-    return [true, globalErrorParseResult.data];
+type ClientImplementation = {
+    [Key in keyof typeof API]: (
+        data: z.infer<(typeof API)[Key]["requestSchema"]>,
+    ) => Promise<ClientResponse<Key>>;
 };
 
-export const performFetchConsumerData = async (
-    data: FetchConsumerDataRequest,
-): Promise<
-    | [true, GlobalErrorResponse | FetchConsumerDataResponse]
-    | [false, 'requestError' | 'jsonParseError' | 'schemaValidationError']
-> => {
-    const requestData: GlobalRequest = {
-        procedure: FetchConsumerDataRequestId,
-        data: data,
-    };
-    const [responseSuccess, response] = await performSafeRequest(API_URL, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(requestData),
-    });
+interface BaseAPIClient {
+    formatError(error: ProcedureErrorResponse | APIClientError): string;
+}
 
-    if (!responseSuccess) {
-        return [false, 'requestError'];
+class APIClient implements BaseAPIClient {
+    private static instance = new APIClient();
+    private logger = createLogger("@/shared/utilities/apiClient");
+
+    private constructor() {
+        for (const item in API) {
+            Object.defineProperty(this, item, {
+                configurable: false,
+                enumerable: true,
+                value: this.clientMethod.bind(this, item as keyof typeof API),
+                writable: false,
+            });
+        }
     }
 
-    const [jsonSuccess, json] = await performSafeJsonParse(
-        await response.text(),
-    );
-    if (!jsonSuccess) {
-        return [false, 'jsonParseError'];
+    private async clientMethod<T extends keyof typeof API>(
+        methodName: keyof typeof API,
+        requestData: z.infer<(typeof API)[T]["requestSchema"]>,
+    ): Promise<ClientResponse<T>> {
+        this.logger.debug("Making '%s' procedure call.", methodName);
+        const [requestSuccess, requestResult] = await performSafeRequest(
+            API_URL,
+            {
+                body: JSON.stringify({
+                    data: requestData,
+                    procedure: methodName,
+                }),
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                method: "POST",
+            },
+        );
+
+        if (!requestSuccess) {
+            this.logger.error(
+                "Request failed for '%s': %o",
+                methodName,
+                requestResult,
+            );
+            return [
+                false,
+                {
+                    data: "requestError",
+                    type: "clientError",
+                },
+            ];
+        }
+
+        const [jsonSuccess, json] = await performSafeJsonParse(
+            await requestResult.text(),
+        );
+
+        if (!jsonSuccess) {
+            this.logger.error(
+                "JSON parse failed for '%s': %o",
+                methodName,
+                json,
+            );
+            return [
+                false,
+                {
+                    data: "jsonParseError",
+                    type: "clientError",
+                },
+            ];
+        }
+
+        const responseSchema = API[methodName].responseSchema;
+
+        const parseResult = responseSchema.safeParse(json);
+        if (parseResult.success) {
+            this.logger.debug(
+                "Response for '%s' successfully parsed.",
+                methodName,
+                parseResult.data,
+            );
+            return [true, parseResult.data];
+        }
+
+        // Try to parse as GlobalErrorResponse
+        const globalErrorParseResult =
+            ProcedureErrorResponseSchema.safeParse(json);
+        if (globalErrorParseResult.success) {
+            this.logger.error(
+                "Response for '%s' is a GlobalErrorResponse.",
+                methodName,
+                globalErrorParseResult.data,
+            );
+            return [false, globalErrorParseResult.data];
+        }
+
+        this.logger.error(
+            "Response for '%s' failed schema validation: %o",
+            methodName,
+            parseResult.error,
+        );
+
+        return [
+            false,
+            {
+                data: "schemaValidationError",
+                type: "clientError",
+            },
+        ];
     }
 
-    const parseResult = FetchConsumerDataResponseSchema.safeParse(json);
-    if (parseResult.success) {
-        return [true, parseResult.data];
+    public static getInstance(): Readonly<APIClient> {
+        return APIClient.instance;
     }
 
-    const globalErrorParseResult = GlobalErrorResponseSchema.safeParse(json);
-    if (!globalErrorParseResult.success) {
-        return [false, 'schemaValidationError'];
+    public formatError(error: ProcedureErrorResponse | APIClientError): string {
+        return `${error.type === "clientError" ? "Client Error: " : "API Error: "}${
+            "message" in error ? error.message : error.data
+        }${!("message" in error) ? ` (${error.data})` : ""}.`;
     }
+}
 
-    return [true, globalErrorParseResult.data];
-};
-
-export const performUpdateCanvasData = async (
-    data: UpdateCanvasDataRequest,
-): Promise<
-    | [true, GlobalErrorResponse | UpdateCanvasDataResponse]
-    | [false, 'requestError' | 'jsonParseError' | 'schemaValidationError']
-> => {
-    const requestData: GlobalRequest = {
-        procedure: UpdateCanvasDataRequestId,
-        data: data,
-    };
-    const [responseSuccess, response] = await performSafeRequest(API_URL, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(requestData),
-    });
-
-    if (!responseSuccess) {
-        return [false, 'requestError'];
-    }
-
-    const [jsonSuccess, json] = await performSafeJsonParse(
-        await response.text(),
-    );
-    if (!jsonSuccess) {
-        return [false, 'jsonParseError'];
-    }
-
-    const parseResult = UpdateCanvasDataResponseSchema.safeParse(json);
-    if (parseResult.success) {
-        return [true, parseResult.data];
-    }
-
-    const globalErrorParseResult = GlobalErrorResponseSchema.safeParse(json);
-    if (!globalErrorParseResult.success) {
-        return [false, 'schemaValidationError'];
-    }
-
-    return [true, globalErrorParseResult.data];
-};
+export const apiClient =
+    APIClient.getInstance() as Readonly<ClientImplementation> & BaseAPIClient;

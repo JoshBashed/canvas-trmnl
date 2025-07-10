@@ -40,12 +40,12 @@ export default defineConfig([
                 entries: [{ find: '@', replacement: join(currentDir, 'src') }],
             }),
             replace({
-                'process.env.NODE_ENV': `"${process.env.NODE_ENV}"`,
                 preventAssignment: true,
+                'process.env.NODE_ENV': `"${process.env.NODE_ENV}"`,
             }),
             resolve({
-                preferBuiltins: false,
                 browser: true,
+                preferBuiltins: false,
             }),
             swc(),
             commonjs(),
@@ -53,8 +53,8 @@ export default defineConfig([
             copy({
                 targets: [
                     {
-                        src: 'static/**/*',
                         dest: 'dist/static',
+                        src: 'static/**/*',
                     },
                 ],
                 verbose: true,

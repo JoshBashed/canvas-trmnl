@@ -1,9 +1,9 @@
+import { z } from 'zod';
 import {
     createSearchParams,
     performSafeJsonParse,
     performSafeRequest,
 } from '@/shared/utilities/fetchUtilities.ts';
-import { z } from 'zod';
 
 export interface CanvasConfig {
     token: string;
@@ -70,16 +70,16 @@ export const fetchCourses = async (
 
 const CanvasCourseAssignmentSchema = z
     .object({
-        id: z.number(),
-        name: z.string(),
         description: z.string().nullable(),
         due_at: z.coerce.date().nullable(),
+        id: z.number(),
+        name: z.string(),
     })
     .transform((data) => ({
-        id: data.id,
-        name: data.name,
         description: data.description ?? '',
         dueAt: data.due_at,
+        id: data.id,
+        name: data.name,
     }));
 const CanvasCourseAssignmentsSchema = z.array(CanvasCourseAssignmentSchema);
 export interface AssignmentsRequest {
@@ -115,8 +115,8 @@ export const fetchCourseAssignments = async (
         config.baseUrl,
     );
     url.search = createSearchParams({
-        order_by: request.orderBy,
         bucket: request.bucket,
+        order_by: request.orderBy,
     }).toString();
 
     // Make the request.

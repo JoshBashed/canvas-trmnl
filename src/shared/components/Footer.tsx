@@ -8,8 +8,8 @@ export const Footer: FC = () => {
                     <span>
                         Made by{' '}
                         <a
-                            href='https://github.com/JoshuaBrest/'
                             className='underline'
+                            href='https://github.com/JoshuaBrest/'
                         >
                             josh
                         </a>
@@ -20,8 +20,8 @@ export const Footer: FC = () => {
                 <div className='flex-grow' />
                 <div className='text-right'>
                     <a
-                        href='https://github.com/JoshuaBrest/canvas-trmnl'
                         className='underline'
+                        href='https://github.com/JoshuaBrest/canvas-trmnl'
                     >
                         GitHub
                     </a>

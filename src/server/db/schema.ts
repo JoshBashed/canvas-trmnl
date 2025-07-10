@@ -11,26 +11,26 @@ import {
 } from 'drizzle-orm/pg-core';
 
 export const consumers = pgTable('consumers', {
-    id: uuid().primaryKey().defaultRandom(),
     createdAt: timestamp().notNull().defaultNow(),
+    id: uuid().primaryKey().defaultRandom(),
 });
 
 export const consumersRelations = relations(consumers, ({ one }) => ({
-    trmnlData: one(trmnlData),
     canvasToken: one(canvasTokens),
     settings: one(settings),
+    trmnlData: one(trmnlData),
 }));
 
 export const trmnlData = pgTable('trmnlData', {
-    id: uuid().primaryKey().defaultRandom(),
     consumerId: uuid()
         .unique()
         .notNull()
         .references(() => consumers.id, { onDelete: 'cascade' }),
-    trmnlId: uuid().unique().notNull(),
-    name: varchar().notNull(),
     email: varchar().notNull(),
+    id: uuid().primaryKey().defaultRandom(),
+    name: varchar().notNull(),
     settingsId: integer().notNull(),
+    trmnlId: uuid().unique().notNull(),
 });
 
 export const trmnlDataRelations = relations(trmnlData, ({ one }) => ({
@@ -41,20 +41,20 @@ export const trmnlDataRelations = relations(trmnlData, ({ one }) => ({
 }));
 
 export const trmnlAuthorizationTokens = pgTable('trmnlAuthorizationTokens', {
-    id: uuid().primaryKey().defaultRandom(),
-    used: boolean().notNull().default(false),
-    token: text().unique().notNull(),
     createdAt: timestamp().notNull().defaultNow(),
+    id: uuid().primaryKey().defaultRandom(),
+    token: text().unique().notNull(),
+    used: boolean().notNull().default(false),
 });
 
 export const canvasTokens = pgTable('canvasTokens', {
-    id: uuid().primaryKey().defaultRandom(),
+    canvasServer: text().notNull(),
+    canvasToken: text().notNull(),
     consumerId: uuid()
         .unique()
         .notNull()
         .references(() => consumers.id, { onDelete: 'cascade' }),
-    canvasServer: text().notNull(),
-    canvasToken: text().notNull(),
+    id: uuid().primaryKey().defaultRandom(),
 });
 
 export const canvasTokensRelations = relations(canvasTokens, ({ one }) => ({
@@ -65,11 +65,11 @@ export const canvasTokensRelations = relations(canvasTokens, ({ one }) => ({
 }));
 
 export const settings = pgTable('settings', {
-    id: uuid().primaryKey().defaultRandom(),
     consumerId: uuid()
         .unique()
         .notNull()
         .references(() => consumers.id, { onDelete: 'cascade' }),
+    id: uuid().primaryKey().defaultRandom(),
     setting: json().notNull(),
 });
 

@@ -1,5 +1,5 @@
-import { Footer } from '@/shared/components/Footer.tsx';
 import React from 'react';
+import { Footer } from '@/shared/components/Footer.tsx';
 
 export const Home = () => {
     return (
@@ -16,8 +16,8 @@ export const Home = () => {
                         </p>
                     </div>
                     <a
-                        href='https://usetrmnl.com/plugin_settings/new?keyname=canvas_lms'
                         className='inline-block w-max rounded-full bg-zinc-50 px-4 py-2 text-zinc-950 hover:underline'
+                        href='https://usetrmnl.com/plugin_settings/new?keyname=canvas_lms'
                     >
                         Add to TRMNL
                     </a>

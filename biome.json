@@ -1,19 +1,25 @@
 {
-    "$schema": "https://biomejs.dev/schemas/1.9.4/schema.json",
-    "vcs": {
-        "enabled": false,
-        "clientKind": "git",
-        "useIgnoreFile": false
+    "$schema": "https://biomejs.dev/schemas/2.1.1/schema.json",
+    "assist": {
+        "actions": {
+            "source": {
+                "organizeImports": "on",
+                "useSortedAttributes": "on",
+                "useSortedKeys": "on",
+                "useSortedProperties": "on"
+            }
+        },
+        "enabled": true
     },
     "files": {
-        "ignoreUnknown": false,
-        "ignore": [
-            "**/node_modules/**",
-            "**/dist/**",
-            "**/build/**",
-            "**/.git/**",
-            "**/.DS_Store",
-            "**/.env*"
+        "includes": [
+            "**",
+            "!**/node_modules/**",
+            "!**/dist/**",
+            "!**/build/**",
+            "!**/.git/**",
+            "!**/.DS_Store",
+            "!**/.env*"
         ]
     },
     "formatter": {
@@ -21,24 +27,26 @@
         "indentStyle": "space",
         "indentWidth": 4
     },
-    "organizeImports": {
-        "enabled": true
+    "javascript": {
+        "formatter": {
+            "jsxQuoteStyle": "single",
+            "quoteStyle": "single",
+            "semicolons": "always"
+        },
+        "jsxRuntime": "reactClassic"
     },
     "linter": {
         "enabled": true,
         "rules": {
-            "recommended": true,
             "nursery": {
                 "useSortedClasses": "warn"
-            }
+            },
+            "recommended": true
         }
     },
-    "javascript": {
-        "formatter": {
-            "quoteStyle": "single",
-            "jsxQuoteStyle": "single",
-            "semicolons": "always"
-        },
-        "jsxRuntime": "reactClassic"
+    "vcs": {
+        "clientKind": "git",
+        "enabled": false,
+        "useIgnoreFile": false
     }
 }

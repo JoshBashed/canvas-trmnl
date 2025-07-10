@@ -1,51 +1,50 @@
-import fs from 'node:fs';
-import fsPromises from 'node:fs/promises';
-import path from 'node:path';
-import { fileURLToPath } from 'node:url';
-import { createAppApiRoutes } from '@/server/controllers/apiController.ts';
-import { createTrmnlRoutes } from '@/server/controllers/trmnlController.tsx';
-import { ServerApp } from '@/shared/pages/App.tsx';
-import { createLogger } from '@/shared/utilities/loggingUtilities.ts';
-import { serve } from '@hono/node-server';
-import { Hono } from 'hono';
-import { serveStatic } from 'hono/serve-static';
-import React from 'react';
-import { renderToString } from 'react-dom/server';
-import { appEnv } from './appEnv.ts';
+import fs from "node:fs";
+import fsPromises from "node:fs/promises";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
+import { serve } from "@hono/node-server";
+import { Hono } from "hono";
+import { serveStatic } from "hono/serve-static";
+import React from "react";
+import { renderToString } from "react-dom/server";
+import { createAppApiRoutes } from "@/server/api/index.ts";
+import { createTrmnlRoutes } from "@/server/trmnl/index.ts";
+import { ServerApp } from "@/shared/pages/App.tsx";
+import { createLogger } from "@/shared/utilities/loggingUtilities.ts";
+import { appEnv } from "@/server/appEnv.ts";
 
-const logger = createLogger('@/server/index');
+const logger = createLogger("@/server/index");
 
 const main = async () => {
     // Get the static directory.
     const dirname = path.dirname(fileURLToPath(import.meta.url));
-    const staticDir = path.join(dirname, 'static');
+    const staticDir = path.join(dirname, "static");
 
-    logger.info('Starting server...');
+    logger.info("Starting server...");
     const app = new Hono();
 
-    app.get('/', async (c) => {
-        return c.redirect('/app');
+    app.get("/", async (c) => {
+        return c.redirect("/app");
     });
 
     // Serve the app.
-    app.get('/app/*', async (c) => {
+    app.get("/app/*", async (c) => {
         // Render the react app.
         const html = renderToString(
-            <ServerApp url={c.req.path} pageName='App' />,
+            <ServerApp pageName="App" url={c.req.path} />,
         );
 
         return c.html(html, {
             headers: {
-                'Content-Type': 'text/html',
+                "Content-Type": "text/html",
             },
         });
     });
 
     // Serve static files
     app.get(
-        '/static/*',
+        "/static/*",
         serveStatic({
-            root: '/',
             getContent: async (pathData) => {
                 const pathNormalized = path.normalize(pathData);
                 const finalPath = path.resolve(
@@ -58,11 +57,12 @@ const main = async () => {
                     return null;
                 return fsPromises.readFile(finalPath);
             },
+            root: "/",
         }),
     );
 
-    app.route('/trmnl', createTrmnlRoutes());
-    app.route('/api', createAppApiRoutes());
+    app.route("/trmnl", createTrmnlRoutes());
+    app.route("/api", createAppApiRoutes());
 
     serve({
         fetch: app.fetch,

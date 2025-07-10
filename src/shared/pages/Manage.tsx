@@ -1,10 +1,7 @@
-import { LoadingIcon } from '@/shared/components/LoadingIcon.tsx';
-import {
-    performFetchConsumerData,
-    performUpdateCanvasData,
-} from '@/shared/utilities/apiClient.ts';
-import React, { useEffect, useMemo, useState, type FC } from 'react';
+import React, { type FC, useEffect, useMemo, useState } from 'react';
 import { useLocation, useParams } from 'react-router';
+import { LoadingIcon } from '@/shared/components/LoadingIcon.tsx';
+import { apiClient } from '@/shared/utilities/apiClient.ts';
 
 export const Manage: FC = () => {
     const [consumerData, setConsumerData] = useState<{
@@ -32,35 +29,27 @@ export const Manage: FC = () => {
         }
 
         (async () => {
-            const [success, data] = await performFetchConsumerData({
-                trmnlId: params.id ?? '',
+            const [dataResult, data] = await apiClient.fetchConsumerData({
                 authToken: token,
+                trmnlId: params.id ?? '',
             });
             if (cancelled) return;
 
-            if (!success) {
-                setError(`Request failed: ${data}.`);
-                return;
-            }
-
-            if (data.type === 'globalError') {
-                setError(`Request failed (API error): ${data.error}.`);
+            if (!dataResult) {
+                setError(apiClient.formatError(data));
                 return;
             }
 
             if (data.type === 'error') {
-                setError(`Request failed (procedure error): ${data.error}.`);
+                setError(`Error: ${data.data}.`);
                 return;
             }
 
-            if (data.type === 'success') {
-                setConsumerData({
-                    trmnlId: data.data.trmnlId,
-                    name: data.data.name,
-                    settingsId: data.data.settingsId,
-                });
-                return;
-            }
+            setConsumerData({
+                name: data.data.name,
+                settingsId: data.data.settingsId,
+                trmnlId: data.data.trmnlId,
+            });
         })();
 
         return () => {
@@ -83,10 +72,10 @@ export const Manage: FC = () => {
             )}
             {consumerData && (
                 <ManagePage
-                    trmnlId={consumerData.trmnlId}
-                    trmnlSettingsId={consumerData.settingsId.toString()}
                     name={consumerData.name}
                     token={token ?? ''}
+                    trmnlId={consumerData.trmnlId}
+                    trmnlSettingsId={consumerData.settingsId.toString()}
                 />
             )}
         </div>
@@ -109,21 +98,21 @@ export const ManagePage: FC<{
         <div className='flex w-full max-w-4xl flex-col gap-8'>
             <div className='flex items-center justify-between'>
                 <a
-                    href={`https://usetrmnl.com/plugin_settings/${props.trmnlSettingsId}/edit?keyname=canvas_lms`}
                     className='flex gap-2 rounded text-sm text-zinc-400 hover:underline'
+                    href={`https://usetrmnl.com/plugin_settings/${props.trmnlSettingsId}/edit?keyname=canvas_lms`}
                 >
                     <svg
-                        role='img'
                         aria-label='back arrow'
-                        xmlns='http://www.w3.org/2000/svg'
-                        viewBox='0 0 20 20'
-                        fill='currentColor'
                         className='size-5'
+                        fill='currentColor'
+                        role='img'
+                        viewBox='0 0 20 20'
+                        xmlns='http://www.w3.org/2000/svg'
                     >
                         <path
-                            fillRule='evenodd'
-                            d='M17 10a.75.75 0 0 1-.75.75H5.612l4.158 3.96a.75.75 0 1 1-1.04 1.08l-5.5-5.25a.75.75 0 0 1 0-1.08l5.5-5.25a.75.75 0 1 1 1.04 1.08L5.612 9.25H16.25A.75.75 0 0 1 17 10Z'
                             clipRule='evenodd'
+                            d='M17 10a.75.75 0 0 1-.75.75H5.612l4.158 3.96a.75.75 0 1 1-1.04 1.08l-5.5-5.25a.75.75 0 0 1 0-1.08l5.5-5.25a.75.75 0 1 1 1.04 1.08L5.612 9.25H16.25A.75.75 0 0 1 17 10Z'
+                            fillRule='evenodd'
                         />
                     </svg>
                     Back to settings
@@ -140,46 +129,46 @@ export const ManagePage: FC<{
             <div className='flex flex-col gap-6'>
                 <div className='flex flex-col gap-2'>
                     <label
-                        htmlFor='canvas-server'
                         className='text-sm text-zinc-400'
+                        htmlFor='canvas-server'
                     >
                         Canvas Server (domain)
                     </label>
                     <input
-                        type='text'
-                        id='canvas-server'
-                        placeholder='canvas.instructure.com'
-                        disabled={isLoading}
-                        value={canvasServer}
-                        onChange={(e) => setCanvasServer(e.target.value)}
                         className='rounded border border-zinc-700 bg-zinc-900 px-4 py-2 text-white placeholder-zinc-500 transition disabled:bg-zinc-800/50'
+                        disabled={isLoading}
+                        id='canvas-server'
+                        onChange={(e) => setCanvasServer(e.target.value)}
+                        placeholder='canvas.instructure.com'
+                        type='text'
+                        value={canvasServer}
                     />
                 </div>
 
                 {canvasServer !== '' && (
                     <div className='flex flex-col gap-2'>
                         <label
-                            htmlFor='canvas-token'
                             className='text-sm text-zinc-400'
+                            htmlFor='canvas-token'
                         >
                             Canvas Access Token
                         </label>
                         <input
-                            type='text'
-                            id='canvas-token'
-                            placeholder='your_canvas_token'
-                            disabled={isLoading}
-                            value={canvasToken}
-                            onChange={(e) => setCanvasToken(e.target.value)}
                             className='rounded border border-zinc-700 bg-zinc-900 px-4 py-2 text-white placeholder-zinc-500 transition disabled:bg-zinc-800/50'
+                            disabled={isLoading}
+                            id='canvas-token'
+                            onChange={(e) => setCanvasToken(e.target.value)}
+                            placeholder='your_canvas_token'
+                            type='text'
+                            value={canvasToken}
                         />
                         <p className='text-sm text-zinc-400'>
                             Find your token{' '}
                             <a
-                                href={`https://${canvasServer}/profile/settings`}
-                                target='_blank'
-                                rel='noreferrer'
                                 className='underline'
+                                href={`https://${canvasServer}/profile/settings`}
+                                rel='noreferrer'
+                                target='_blank'
                             >
                                 here
                             </a>
@@ -205,7 +194,6 @@ export const ManagePage: FC<{
                 <div className='flex items-center justify-end gap-2'>
                     {isLoading && <LoadingIcon />}
                     <button
-                        type='button'
                         className='cursor-pointer rounded-full bg-white px-6 py-2 font-semibold text-black transition hover:underline disabled:cursor-not-allowed disabled:bg-zinc-300'
                         disabled={isLoading}
                         onClick={async () => {
@@ -224,31 +212,24 @@ export const ManagePage: FC<{
                             }
 
                             const [success, data] =
-                                await performUpdateCanvasData({
+                                await apiClient.updateConsumerCanvasSettings({
                                     authToken: props.token,
-                                    canvasServer: url.toString(),
                                     canvasAccessToken: canvasToken,
+                                    canvasServer: url.toString(),
                                     trmnlId: props.trmnlId,
                                 });
                             setIsLoading(false);
                             if (!success) {
-                                setError(`request failed: ${data}.`);
-                                return;
-                            }
-                            if (data.type === 'globalError') {
-                                setError(
-                                    `request failed (api error): ${data.error}.`,
-                                );
+                                setError(apiClient.formatError(data));
                                 return;
                             }
                             if (data.type === 'error') {
-                                setError(
-                                    `request failed (procedure error): ${data.error}.`,
-                                );
+                                setError(`Error: ${data.data}.`);
                                 return;
                             }
-                            if (data.type === 'success') setSuccess(true);
+                            setSuccess(true);
                         }}
+                        type='button'
                     >
                         Save
                     </button>
