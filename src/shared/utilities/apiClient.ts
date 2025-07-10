@@ -1,34 +1,34 @@
-import type { z } from "zod";
-import { API } from "@/shared/api/api.ts";
+import type { z } from 'zod';
+import { API } from '@/shared/api/api.ts';
 import {
     type ProcedureErrorResponse,
     ProcedureErrorResponseSchema,
-} from "@/shared/api/index.ts";
+} from '@/shared/api/index.ts';
 import {
     performSafeJsonParse,
     performSafeRequest,
-} from "@/shared/utilities/fetchUtilities.ts";
-import { createLogger } from "@/shared/utilities/loggingUtilities.ts";
+} from '@/shared/utilities/fetchUtilities.ts';
+import { createLogger } from '@/shared/utilities/loggingUtilities.ts';
 
-const API_URL = "/api/performAction";
+const API_URL = '/api/performAction';
 
 interface APIClientError {
-    type: "clientError";
+    type: 'clientError';
     data:
-        | "requestError"
-        | "jsonParseError"
-        | "schemaValidationError"
-        | "unknownError";
+        | 'requestError'
+        | 'jsonParseError'
+        | 'schemaValidationError'
+        | 'unknownError';
 }
 
 type ClientResponse<T extends keyof typeof API> =
-    | [true, z.infer<(typeof API)[T]["responseSchema"]>]
+    | [true, z.infer<(typeof API)[T]['responseSchema']>]
     | [false, ProcedureErrorResponse]
     | [false, APIClientError];
 
 type ClientImplementation = {
     [Key in keyof typeof API]: (
-        data: z.infer<(typeof API)[Key]["requestSchema"]>,
+        data: z.infer<(typeof API)[Key]['requestSchema']>,
     ) => Promise<ClientResponse<Key>>;
 };
 
@@ -38,7 +38,7 @@ interface BaseAPIClient {
 
 class APIClient implements BaseAPIClient {
     private static instance = new APIClient();
-    private logger = createLogger("@/shared/utilities/apiClient");
+    private logger = createLogger('@/shared/utilities/apiClient');
 
     private constructor() {
         for (const item in API) {
@@ -53,7 +53,7 @@ class APIClient implements BaseAPIClient {
 
     private async clientMethod<T extends keyof typeof API>(
         methodName: keyof typeof API,
-        requestData: z.infer<(typeof API)[T]["requestSchema"]>,
+        requestData: z.infer<(typeof API)[T]['requestSchema']>,
     ): Promise<ClientResponse<T>> {
         this.logger.debug("Making '%s' procedure call.", methodName);
         const [requestSuccess, requestResult] = await performSafeRequest(
@@ -64,9 +64,9 @@ class APIClient implements BaseAPIClient {
                     procedure: methodName,
                 }),
                 headers: {
-                    "Content-Type": "application/json",
+                    'Content-Type': 'application/json',
                 },
-                method: "POST",
+                method: 'POST',
             },
         );
 
@@ -79,8 +79,8 @@ class APIClient implements BaseAPIClient {
             return [
                 false,
                 {
-                    data: "requestError",
-                    type: "clientError",
+                    data: 'requestError',
+                    type: 'clientError',
                 },
             ];
         }
@@ -98,8 +98,8 @@ class APIClient implements BaseAPIClient {
             return [
                 false,
                 {
-                    data: "jsonParseError",
-                    type: "clientError",
+                    data: 'jsonParseError',
+                    type: 'clientError',
                 },
             ];
         }
@@ -137,8 +137,8 @@ class APIClient implements BaseAPIClient {
         return [
             false,
             {
-                data: "schemaValidationError",
-                type: "clientError",
+                data: 'schemaValidationError',
+                type: 'clientError',
             },
         ];
     }
@@ -148,9 +148,9 @@ class APIClient implements BaseAPIClient {
     }
 
     public formatError(error: ProcedureErrorResponse | APIClientError): string {
-        return `${error.type === "clientError" ? "Client Error: " : "API Error: "}${
-            "message" in error ? error.message : error.data
-        }${!("message" in error) ? ` (${error.data})` : ""}.`;
+        return `${error.type === 'clientError' ? 'Client Error: ' : 'API Error: '}${
+            'message' in error ? error.message : error.data
+        }${!('message' in error) ? ` (${error.data})` : ''}.`;
     }
 }
 

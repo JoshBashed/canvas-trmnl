@@ -1,30 +1,30 @@
-import { eq } from "drizzle-orm";
-import { CREATE_PROCEDURE_FN } from "@/server/api/createProcedure.ts";
-import { verifyTrmnlToken } from "@/server/apiClients/trmnlApiClient.ts";
-import { db } from "@/server/db/index.ts";
-import { trmnlData } from "@/server/db/schema.ts";
-import { stringifyError, tryCatch } from "@/shared/utilities/tryCatch.ts";
+import { eq } from 'drizzle-orm';
+import { CREATE_PROCEDURE_FN } from '@/server/api/createProcedure.ts';
+import { verifyTrmnlToken } from '@/server/apiClients/trmnlApiClient.ts';
+import { db } from '@/server/db/index.ts';
+import { trmnlData } from '@/server/db/schema.ts';
+import { stringifyError, tryCatch } from '@/shared/utilities/tryCatch.ts';
 
-export const fetchConsumerData = CREATE_PROCEDURE_FN<"fetchConsumerData">(
+export const fetchConsumerData = CREATE_PROCEDURE_FN<'fetchConsumerData'>(
     async (logger, data) => {
         const token = await verifyTrmnlToken(data.authToken);
         if (!token) {
-            logger.info("Invalid token: %s.", data.authToken);
+            logger.info('Invalid token: %s.', data.authToken);
             return {
-                data: "authenticationError",
-                type: "error",
+                data: 'authenticationError',
+                type: 'error',
             };
         }
 
         if (token.payload.sub?.toLowerCase() !== data.trmnlId.toLowerCase()) {
             logger.warn(
-                "JWT sub does not match trmnlId. JWT sub: %s, trmnlId: %s.",
-                token.payload.sub ?? "undefined",
+                'JWT sub does not match trmnlId. JWT sub: %s, trmnlId: %s.',
+                token.payload.sub ?? 'undefined',
                 data.trmnlId,
             );
             return {
-                data: "authenticationError",
-                type: "error",
+                data: 'authenticationError',
+                type: 'error',
             };
         }
 
@@ -37,23 +37,23 @@ export const fetchConsumerData = CREATE_PROCEDURE_FN<"fetchConsumerData">(
         );
         if (!trmnlDataQuerySuccess) {
             logger.error(
-                "Failed to query trmnlData for trmnlId %s: %s",
+                'Failed to query trmnlData for trmnlId %s: %s',
                 data.trmnlId,
                 stringifyError(trmnlDataQuery),
             );
             return {
-                data: "databaseQueryError",
-                type: "error",
+                data: 'databaseQueryError',
+                type: 'error',
             };
         }
         if (trmnlDataQuery.length === 0) {
             logger.warn(
-                "trmnlData does not exist for trmnlId: %s",
+                'trmnlData does not exist for trmnlId: %s',
                 data.trmnlId,
             );
             return {
-                data: "consumerNotFoundError",
-                type: "error",
+                data: 'consumerNotFoundError',
+                type: 'error',
             };
         }
 
@@ -65,7 +65,7 @@ export const fetchConsumerData = CREATE_PROCEDURE_FN<"fetchConsumerData">(
                 settingsId: dataResult.settingsId,
                 trmnlId: dataResult.trmnlId,
             },
-            type: "okay",
+            type: 'okay',
         };
     },
 );

@@ -1,19 +1,19 @@
-import { eq } from "drizzle-orm";
-import { CREATE_PROCEDURE_FN } from "@/server/api/createProcedure.ts";
-import { verifyTrmnlToken } from "@/server/apiClients/trmnlApiClient.ts";
-import { db } from "@/server/db/index.ts";
-import { canvasTokens, trmnlData } from "@/server/db/schema.ts";
-import { stringifyError, tryCatch } from "@/shared/utilities/tryCatch.ts";
+import { eq } from 'drizzle-orm';
+import { CREATE_PROCEDURE_FN } from '@/server/api/createProcedure.ts';
+import { verifyTrmnlToken } from '@/server/apiClients/trmnlApiClient.ts';
+import { db } from '@/server/db/index.ts';
+import { canvasTokens, trmnlData } from '@/server/db/schema.ts';
+import { stringifyError, tryCatch } from '@/shared/utilities/tryCatch.ts';
 
 export const updateConsumerCanvasSettings =
-    CREATE_PROCEDURE_FN<"updateConsumerCanvasSettings">(
+    CREATE_PROCEDURE_FN<'updateConsumerCanvasSettings'>(
         async (logger, data) => {
             const token = await verifyTrmnlToken(data.authToken);
             if (!token) {
-                logger.info("Invalid token: %s.", data.authToken);
+                logger.info('Invalid token: %s.', data.authToken);
                 return {
-                    data: "authenticationError",
-                    type: "error",
+                    data: 'authenticationError',
+                    type: 'error',
                 };
             }
 
@@ -21,13 +21,13 @@ export const updateConsumerCanvasSettings =
                 token.payload.sub?.toLowerCase() !== data.trmnlId.toLowerCase()
             ) {
                 logger.warn(
-                    "JWT sub does not match trmnlId. JWT sub: %s, trmnlId: %s.",
-                    token.payload.sub ?? "undefined",
+                    'JWT sub does not match trmnlId. JWT sub: %s, trmnlId: %s.',
+                    token.payload.sub ?? 'undefined',
                     data.trmnlId,
                 );
                 return {
-                    data: "authenticationError",
-                    type: "error",
+                    data: 'authenticationError',
+                    type: 'error',
                 };
             }
 
@@ -40,23 +40,23 @@ export const updateConsumerCanvasSettings =
             );
             if (!trmnlDataQuerySuccess) {
                 logger.error(
-                    "Failed to query trmnlData for trmnlId %s: %s",
+                    'Failed to query trmnlData for trmnlId %s: %s',
                     data.trmnlId,
                     stringifyError(trmnlDataQuery),
                 );
                 return {
-                    data: "databaseQueryError",
-                    type: "error",
+                    data: 'databaseQueryError',
+                    type: 'error',
                 };
             }
             if (trmnlDataQuery.length === 0) {
                 logger.warn(
-                    "trmnlData does not exist for trmnlId: %s",
+                    'trmnlData does not exist for trmnlId: %s',
                     data.trmnlId,
                 );
                 return {
-                    data: "consumerNotFoundError",
-                    type: "error",
+                    data: 'consumerNotFoundError',
+                    type: 'error',
                 };
             }
             const { consumerId } = trmnlDataQuery[0];
@@ -70,10 +70,10 @@ export const updateConsumerCanvasSettings =
                 parseUrl(data.canvasServer),
             );
             if (!urlResult) {
-                logger.warn("Invalid canvas url: %s.", data.canvasServer);
+                logger.warn('Invalid canvas url: %s.', data.canvasServer);
                 return {
-                    data: "invalidUrlError",
-                    type: "error",
+                    data: 'invalidUrlError',
+                    type: 'error',
                 };
             }
 
@@ -82,32 +82,32 @@ export const updateConsumerCanvasSettings =
                 db
                     .insert(canvasTokens)
                     .values({
-                        consumerId: consumerId,
-                        canvasToken: data.canvasAccessToken,
                         canvasServer: url.hostname,
+                        canvasToken: data.canvasAccessToken,
+                        consumerId: consumerId,
                     })
                     .onConflictDoUpdate({
-                        target: canvasTokens.consumerId,
                         set: {
-                            canvasToken: data.canvasAccessToken,
                             canvasServer: url.hostname,
+                            canvasToken: data.canvasAccessToken,
                         },
+                        target: canvasTokens.consumerId,
                     }),
             );
             if (!updateResult) {
                 logger.error(
-                    "Failed to update canvas settings: %s",
+                    'Failed to update canvas settings: %s',
                     stringifyError(update),
                 );
                 return {
-                    data: "databaseUpdateError",
-                    type: "error",
+                    data: 'databaseUpdateError',
+                    type: 'error',
                 };
             }
 
             return {
                 data: null,
-                type: "okay",
+                type: 'okay',
             };
         },
     );
