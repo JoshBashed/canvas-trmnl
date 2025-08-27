@@ -1,5 +1,5 @@
 {
-    "$schema": "https://biomejs.dev/schemas/2.1.1/schema.json",
+    "$schema": "https://biomejs.dev/schemas/2.2.2/schema.json",
     "assist": {
         "actions": {
             "source": {
@@ -14,10 +14,10 @@
     "files": {
         "includes": [
             "**",
-            "!**/node_modules/**",
-            "!**/dist/**",
-            "!**/build/**",
-            "!**/.git/**",
+            "!**/node_modules",
+            "!**/dist",
+            "!**/build",
+            "!**/.git",
             "!**/.DS_Store",
             "!**/.env*"
         ]
@@ -41,7 +41,10 @@
             "nursery": {
                 "useSortedClasses": "warn"
             },
-            "recommended": true
+            "recommended": true,
+            "suspicious": {
+                "noUnknownAtRules": "off"
+            }
         }
     },
     "vcs": {

@@ -49,6 +49,7 @@ export const updateConsumerCanvasSettings =
                     type: 'error',
                 };
             }
+
             if (trmnlDataQuery.length === 0) {
                 logger.warn(
                     'trmnlData does not exist for trmnlId: %s',
@@ -100,7 +101,7 @@ export const updateConsumerCanvasSettings =
                     stringifyError(update),
                 );
                 return {
-                    data: 'databaseUpdateError',
+                    data: 'databaseInsertError',
                     type: 'error',
                 };
             }
