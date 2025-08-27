@@ -15,7 +15,6 @@ export const LoadingIcon: FC = () => {
                 fx='.66'
                 fy='.3125'
                 gradientTransform='scale(1.5)'
-                id='a9'
             >
                 <stop offset='0' stopColor='#FFFFFF' />
                 <stop offset='.3' stopColor='#FFFFFF' stopOpacity='.9' />

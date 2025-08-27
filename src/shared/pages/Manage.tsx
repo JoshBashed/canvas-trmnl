@@ -1,4 +1,4 @@
-import React, { type FC, useEffect, useMemo, useState } from 'react';
+import React, { type FC, useEffect, useId, useMemo, useState } from 'react';
 import { useLocation, useParams } from 'react-router';
 import { LoadingIcon } from '@/shared/components/LoadingIcon.tsx';
 import { apiClient } from '@/shared/utilities/apiClient.ts';
@@ -99,6 +99,9 @@ export const ManagePage: FC<{
     const [success, setSuccess] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
+    const accessibilityCanvasServerId = useId();
+    const accessibilityCanvasTokenId = useId();
+
     return (
         <div className='flex w-full max-w-4xl flex-col gap-8'>
             <div className='flex items-center justify-between'>
@@ -135,14 +138,14 @@ export const ManagePage: FC<{
                 <div className='flex flex-col gap-2'>
                     <label
                         className='text-sm text-zinc-400'
-                        htmlFor='canvas-server'
+                        htmlFor={accessibilityCanvasServerId}
                     >
                         Canvas Server (domain)
                     </label>
                     <input
                         className='rounded border border-zinc-700 bg-zinc-900 px-4 py-2 text-white placeholder-zinc-500 transition disabled:bg-zinc-800/50'
                         disabled={isLoading}
-                        id='canvas-server'
+                        id={accessibilityCanvasServerId}
                         onChange={(e) => setCanvasServer(e.target.value)}
                         placeholder='canvas.instructure.com'
                         type='text'
@@ -154,14 +157,14 @@ export const ManagePage: FC<{
                     <div className='flex flex-col gap-2'>
                         <label
                             className='text-sm text-zinc-400'
-                            htmlFor='canvas-token'
+                            htmlFor={accessibilityCanvasTokenId}
                         >
                             Canvas Access Token
                         </label>
                         <input
                             className='rounded border border-zinc-700 bg-zinc-900 px-4 py-2 text-white placeholder-zinc-500 transition disabled:bg-zinc-800/50'
                             disabled={isLoading}
-                            id='canvas-token'
+                            id={accessibilityCanvasTokenId}
                             onChange={(e) => setCanvasToken(e.target.value)}
                             placeholder='your_canvas_token'
                             type='text'

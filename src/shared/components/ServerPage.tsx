@@ -1,5 +1,7 @@
 import React, { type FC, type ReactNode } from 'react';
 
+const MOUNT_ID = 'app';
+
 interface ServerPageProps {
     title: string;
     head?: ReactNode;
@@ -33,7 +35,7 @@ export const ServerPage: FC<ServerPageProps> = ({ title, head, children }) => {
             </head>
             <body
                 className='m-0 h-full w-full bg-zinc-950 text-zinc-50'
-                id='app'
+                id={MOUNT_ID}
             >
                 {children}
             </body>
