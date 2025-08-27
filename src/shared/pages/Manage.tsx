@@ -3,6 +3,11 @@ import { useLocation, useParams } from 'react-router';
 import { LoadingIcon } from '@/shared/components/LoadingIcon.tsx';
 import { apiClient } from '@/shared/utilities/apiClient.ts';
 
+const fixDomainForStupidUsers = (domain: string) => {
+    const protocolRegex = /^[a-zA-Z][a-zA-Z0-9+\-.]*:\/\//;
+    return domain.replace(protocolRegex, '');
+};
+
 export const Manage: FC = () => {
     const [consumerData, setConsumerData] = useState<{
         trmnlId: string;
@@ -166,7 +171,7 @@ export const ManagePage: FC<{
                             Find your token{' '}
                             <a
                                 className='underline'
-                                href={`https://${canvasServer}/profile/settings`}
+                                href={`https://${fixDomainForStupidUsers(canvasServer)}/profile/settings`}
                                 rel='noreferrer'
                                 target='_blank'
                             >
@@ -202,12 +207,15 @@ export const ManagePage: FC<{
                             setError(null);
                             setSuccess(false);
 
+                            const canvasServerDomain =
+                                fixDomainForStupidUsers(canvasServer);
+
                             let url: URL;
                             try {
-                                url = new URL(`https://${canvasServer}`);
+                                url = new URL(`https://${canvasServerDomain}`);
                             } catch {
                                 setIsLoading(false);
-                                setError('invalid canvas server domain.');
+                                setError('Invalid canvas server domain.');
                                 return;
                             }
 
