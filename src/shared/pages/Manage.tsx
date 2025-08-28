@@ -153,11 +153,14 @@ export const ManagePage: FC<{
                         Canvas Server (domain)
                     </label>
                     <input
+                        autoCapitalize='off'
+                        autoComplete='off'
                         className='rounded border border-zinc-700 bg-zinc-900 px-4 py-2 text-white placeholder-zinc-500 transition disabled:bg-zinc-800/50'
                         disabled={isLoading}
                         id={accessibilityCanvasServerId}
                         onChange={(e) => setCanvasServer(e.target.value)}
                         placeholder='canvas.instructure.com'
+                        spellCheck={false}
                         type='text'
                         value={canvasServer}
                     />
@@ -172,12 +175,15 @@ export const ManagePage: FC<{
                             Canvas Access Token
                         </label>
                         <input
+                            autoCapitalize='off'
+                            autoComplete='off'
                             className='rounded border border-zinc-700 bg-zinc-900 px-4 py-2 text-white placeholder-zinc-500 transition disabled:bg-zinc-800/50'
                             disabled={isLoading}
                             id={accessibilityCanvasTokenId}
                             onChange={(e) => setCanvasToken(e.target.value)}
                             placeholder='your_canvas_token'
-                            type='text'
+                            spellCheck={false}
+                            type='password'
                             value={canvasToken}
                         />
                         <p className='text-sm text-zinc-400'>
