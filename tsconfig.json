@@ -5,6 +5,7 @@
         "esModuleInterop": true,
         "forceConsistentCasingInFileNames": true,
         "jsx": "react",
+        "lib": ["ES2022", "DOM"],
         "module": "NodeNext",
         "moduleResolution": "nodenext",
         "noEmit": true,

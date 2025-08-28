@@ -12,7 +12,10 @@ import {
     type ProcedureErrorResponse,
     ProcedureRequestSchema,
 } from '@/shared/api/index.ts';
-import type { Logger } from '@/shared/utilities/loggingUtilities.ts';
+import {
+    createLogger,
+    type Logger,
+} from '@/shared/utilities/loggingUtilities.ts';
 
 const createProcedureError = (
     data: Omit<ProcedureErrorResponse, 'type'>,
@@ -37,8 +40,15 @@ const HANDLERS = {
     updateConsumerCanvasSettings,
 } satisfies ProcedureItems;
 
-const ID_MAP: ProcedureIdMap = Object.fromEntries(
-    Object.entries(API).map(([key, value]) => [value.id, key] as const),
+const ids = Object.values(API).map((v) => v.id);
+if (new Set(ids).size !== ids.length) {
+    createLogger('@/server/api/index').fatal('Duplicate procedure IDs found.');
+}
+
+const ID_MAP: ProcedureIdMap = Object.freeze(
+    Object.fromEntries(
+        Object.entries(API).map(([key, value]) => [value.id, key] as const),
+    ),
 ) as ProcedureIdMap;
 
 export const createAppApiRoutes = (): Hono => {
@@ -67,7 +77,7 @@ export const createAppApiRoutes = (): Hono => {
         }
 
         const { procedure, data } = procedureResult.data;
-        if (!(procedure in ID_MAP)) {
+        if (!Object.hasOwn(ID_MAP, procedure)) {
             logger.info("Unknown procedure '%s'.", procedure);
             return c.json(
                 createProcedureError({ data: 'procedureNotFound' }),
