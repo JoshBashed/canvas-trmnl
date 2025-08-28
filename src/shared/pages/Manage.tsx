@@ -4,14 +4,17 @@ import { LoadingIcon } from '@/shared/components/LoadingIcon.tsx';
 import { apiClient } from '@/shared/utilities/apiClient.ts';
 
 const normalizeDomain = (domain: string): string | null => {
-    const protocolRegex = /^[a-zA-Z][a-zA-Z0-9+\-.]*:\/\//;
-    const noProtocol = domain.replace(protocolRegex, '');
+    let fixedDomain = domain;
+    fixedDomain = fixedDomain.trim();
+    fixedDomain = fixedDomain.replace(/^[a-zA-Z][a-zA-Z0-9+\-.]*:\/\//, '');
     try {
-        const url = new URL(noProtocol);
-        return url.hostname;
+        fixedDomain = new URL(`https://${fixedDomain}`).hostname;
     } catch {
         return null;
     }
+    fixedDomain = fixedDomain.replace(/\.+$/, '');
+    fixedDomain = fixedDomain.toLowerCase();
+    return fixedDomain;
 };
 
 export const Manage: FC = () => {
