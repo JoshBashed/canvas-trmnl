@@ -28,11 +28,19 @@ type ProcedureItems = {
     ) => Promise<z.infer<(typeof API)[Key]['responseSchema']>>;
 };
 
-const DATA = {
+type ProcedureIdMap = {
+    [Key in (typeof API)[keyof typeof API]['id']]: keyof typeof API;
+};
+
+const HANDLERS = {
     createConsumer,
     fetchConsumerData,
     updateConsumerCanvasSettings,
 } satisfies ProcedureItems;
+
+const ID_MAP: ProcedureIdMap = Object.fromEntries(
+    Object.entries(API).map(([key, value]) => [value.id, key] as const),
+) as ProcedureIdMap;
 
 export const createAppApiRoutes = (): Hono => {
     const app = new Hono();
@@ -60,7 +68,7 @@ export const createAppApiRoutes = (): Hono => {
         }
 
         const { procedure, data } = procedureResult.data;
-        if (!(procedure in API)) {
+        if (!(procedure in ID_MAP)) {
             logger.info("Unknown procedure '%s'.", procedure);
             return c.json(
                 createProcedureError({ data: 'procedureNotFound' }),
@@ -68,9 +76,13 @@ export const createAppApiRoutes = (): Hono => {
             );
         }
 
-        logger.info("Handled by procedure '%s'.", procedure);
-        const procedureKey = procedure as keyof typeof API;
-        const procedureData = API[procedureKey];
+        const procedureName = ID_MAP[procedure as keyof typeof ID_MAP];
+        logger.info(
+            "Handled by procedure '%s' (%s).",
+            procedure,
+            procedureName,
+        );
+        const procedureData = API[procedureName];
 
         const requestData = procedureData.requestSchema.safeParse(data);
         if (!requestData.success) {
@@ -80,7 +92,7 @@ export const createAppApiRoutes = (): Hono => {
                 400,
             );
         }
-        const handler = DATA[procedureKey];
+        const handler = HANDLERS[procedureName];
 
         type Grouped<T extends keyof typeof API> = {
             requestSchema: (typeof API)[T]['requestSchema'];
@@ -89,14 +101,14 @@ export const createAppApiRoutes = (): Hono => {
                 data: z.infer<(typeof API)[T]['requestSchema']>,
             ) => Promise<z.infer<(typeof API)[T]['responseSchema']>>;
         };
-        const grouped: Grouped<typeof procedureKey> = {
+        const grouped: Grouped<typeof procedureName> = {
             handler: handler as (
                 logger: Logger,
                 data: z.infer<
-                    (typeof API)[typeof procedureKey]['requestSchema']
+                    (typeof API)[typeof procedureName]['requestSchema']
                 >,
             ) => Promise<
-                z.infer<(typeof API)[typeof procedureKey]['responseSchema']>
+                z.infer<(typeof API)[typeof procedureName]['responseSchema']>
             >,
             requestSchema: procedureData.requestSchema,
         };

@@ -18,13 +18,13 @@ const FetchConsumerData = CREATE_PROCEDURE({
     name: 'fetchConsumerData',
     requestSchema: z.object({
         authToken: z.string(),
-        trmnlId: z.string().uuid(),
+        trmnlId: z.uuid(),
     }),
     responseSchema: CREATE_RESULT(
         z.object({
             name: z.string(),
             settingsId: z.number(),
-            trmnlId: z.string().uuid(),
+            trmnlId: z.uuid(),
         }),
         z.enum([
             'authenticationError',
@@ -41,8 +41,8 @@ const UpdateConsumerCanvasSettings = CREATE_PROCEDURE({
     requestSchema: z.object({
         authToken: z.string(),
         canvasAccessToken: z.string(),
-        canvasServer: z.string().url(),
-        trmnlId: z.string().uuid(),
+        canvasServer: z.url(),
+        trmnlId: z.uuid(),
     }),
     responseSchema: CREATE_RESULT(
         z.null(),
