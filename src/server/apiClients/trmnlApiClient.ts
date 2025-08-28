@@ -81,7 +81,9 @@ export const verifyTrmnlToken = async (
     token: string,
 ): Promise<jose.JWTVerifyResult | false> => {
     const jwkSet = TrmnlCachedJWK.getShared();
-    return await jwkSet.verifyToken(token);
+    const verified = await jwkSet.verifyToken(token);
+    if (!verified) logger.info('Token verification failed.');
+    return verified;
 };
 
 // OauthToken
