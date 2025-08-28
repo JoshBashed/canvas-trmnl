@@ -241,7 +241,7 @@ export const ManagePage: FC<{
                                     authToken: props.token,
                                     canvasAccessToken: canvasToken,
                                     canvasServer: new URL(
-                                        sanitizedDomain,
+                                        `https://${sanitizedDomain}`,
                                     ).toString(),
                                     trmnlId: props.trmnlId,
                                 });
