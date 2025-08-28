@@ -9,13 +9,11 @@ export const updateConsumerCanvasSettings =
     CREATE_PROCEDURE_FN<'updateConsumerCanvasSettings'>(
         async (logger, data) => {
             const token = await verifyTrmnlToken(data.authToken);
-            if (!token) {
-                logger.info('Invalid token: %s.', data.authToken);
+            if (!token)
                 return {
                     data: 'authenticationError',
                     type: 'error',
                 };
-            }
 
             if (
                 token.payload.sub?.toLowerCase() !== data.trmnlId.toLowerCase()
