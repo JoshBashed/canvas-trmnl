@@ -12,12 +12,8 @@ const AppRoutes = () => {
             <Route element={<NotFound />} path='*' />
             <Route element={<Home />} index />
             <Route element={<Docs />} path='docs' />
-            <Route path='app'>
-                <Route path='oauth'>
-                    <Route element={<OauthCreate />} path='create' />
-                </Route>
-                <Route element={<Manage />} path='manage/:id' />
-            </Route>
+            <Route element={<OauthCreate />} path='app/oauth/create' />
+            <Route element={<Manage />} path='app/manage/:id' />
         </Routes>
     );
 };
