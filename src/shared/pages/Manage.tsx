@@ -104,6 +104,10 @@ export const ManagePage: FC<{
     const [isLoading, setIsLoading] = useState(false);
     const [success, setSuccess] = useState(false);
     const [error, setError] = useState<string | null>(null);
+    const sanitizedDomain = useMemo(
+        () => normalizeDomain(canvasServer),
+        [canvasServer],
+    );
 
     const accessibilityCanvasServerId = useId();
     const accessibilityCanvasTokenId = useId();
@@ -159,7 +163,7 @@ export const ManagePage: FC<{
                     />
                 </div>
 
-                {normalizeDomain(canvasServer) && (
+                {sanitizedDomain && (
                     <div className='flex flex-col gap-2'>
                         <label
                             className='text-sm text-zinc-400'
@@ -180,7 +184,7 @@ export const ManagePage: FC<{
                             Find your token{' '}
                             <a
                                 className='underline'
-                                href={`https://${normalizeDomain(canvasServer)}/profile/settings`}
+                                href={`https://${sanitizedDomain}/profile/settings`}
                                 rel='noreferrer'
                                 target='_blank'
                             >
@@ -209,20 +213,15 @@ export const ManagePage: FC<{
                     {isLoading && <LoadingIcon />}
                     <button
                         className='cursor-pointer rounded-full bg-white px-6 py-2 font-semibold text-black transition hover:underline disabled:cursor-not-allowed disabled:bg-zinc-300'
-                        disabled={
-                            isLoading ||
-                            !normalizeDomain(canvasServer) ||
-                            !canvasToken
-                        }
+                        disabled={isLoading || !sanitizedDomain || !canvasToken}
                         onClick={async () => {
-                            if (isLoading) return;
+                            if (isLoading || !sanitizedDomain || !canvasToken)
+                                return;
                             setIsLoading(true);
                             setError(null);
                             setSuccess(false);
 
-                            const canvasServerDomain =
-                                normalizeDomain(canvasServer);
-                            if (!canvasServerDomain) {
+                            if (!sanitizedDomain) {
                                 setIsLoading(false);
                                 setError('Invalid canvas server domain.');
                                 return;
@@ -233,7 +232,7 @@ export const ManagePage: FC<{
                                     authToken: props.token,
                                     canvasAccessToken: canvasToken,
                                     canvasServer: new URL(
-                                        canvasServerDomain,
+                                        sanitizedDomain,
                                     ).toString(),
                                     trmnlId: props.trmnlId,
                                 });
