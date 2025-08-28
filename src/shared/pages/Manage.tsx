@@ -3,9 +3,15 @@ import { useLocation, useParams } from 'react-router';
 import { LoadingIcon } from '@/shared/components/LoadingIcon.tsx';
 import { apiClient } from '@/shared/utilities/apiClient.ts';
 
-const fixDomainForStupidUsers = (domain: string) => {
+const normalizeDomain = (domain: string): string | null => {
     const protocolRegex = /^[a-zA-Z][a-zA-Z0-9+\-.]*:\/\//;
-    return domain.replace(protocolRegex, '');
+    const noProtocol = domain.replace(protocolRegex, '');
+    try {
+        const url = new URL(noProtocol);
+        return url.hostname;
+    } catch {
+        return null;
+    }
 };
 
 export const Manage: FC = () => {
@@ -153,7 +159,7 @@ export const ManagePage: FC<{
                     />
                 </div>
 
-                {canvasServer !== '' && (
+                {normalizeDomain(canvasServer) && (
                     <div className='flex flex-col gap-2'>
                         <label
                             className='text-sm text-zinc-400'
@@ -174,7 +180,7 @@ export const ManagePage: FC<{
                             Find your token{' '}
                             <a
                                 className='underline'
-                                href={`https://${fixDomainForStupidUsers(canvasServer)}/profile/settings`}
+                                href={`https://${normalizeDomain(canvasServer)}/profile/settings`}
                                 rel='noreferrer'
                                 target='_blank'
                             >
@@ -203,7 +209,11 @@ export const ManagePage: FC<{
                     {isLoading && <LoadingIcon />}
                     <button
                         className='cursor-pointer rounded-full bg-white px-6 py-2 font-semibold text-black transition hover:underline disabled:cursor-not-allowed disabled:bg-zinc-300'
-                        disabled={isLoading}
+                        disabled={
+                            isLoading ||
+                            !normalizeDomain(canvasServer) ||
+                            !canvasToken
+                        }
                         onClick={async () => {
                             if (isLoading) return;
                             setIsLoading(true);
@@ -211,12 +221,8 @@ export const ManagePage: FC<{
                             setSuccess(false);
 
                             const canvasServerDomain =
-                                fixDomainForStupidUsers(canvasServer);
-
-                            let url: URL;
-                            try {
-                                url = new URL(`https://${canvasServerDomain}`);
-                            } catch {
+                                normalizeDomain(canvasServer);
+                            if (!canvasServerDomain) {
                                 setIsLoading(false);
                                 setError('Invalid canvas server domain.');
                                 return;
@@ -226,7 +232,9 @@ export const ManagePage: FC<{
                                 await apiClient.updateConsumerCanvasSettings({
                                     authToken: props.token,
                                     canvasAccessToken: canvasToken,
-                                    canvasServer: url.toString(),
+                                    canvasServer: new URL(
+                                        canvasServerDomain,
+                                    ).toString(),
                                     trmnlId: props.trmnlId,
                                 });
                             setIsLoading(false);
