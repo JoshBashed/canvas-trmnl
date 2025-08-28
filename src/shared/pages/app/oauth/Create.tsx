@@ -14,7 +14,7 @@ export const OauthCreate: FC = () => {
         const urlParams = new URLSearchParams(window.location.search);
         const rawCallbackURL = urlParams.get('callback_url');
         const code = urlParams.get('code');
-        const allowedDomains = ['usetrmnl.com'];
+        const ALLOWED_BASE_DOMAIN = 'usetrmnl.com';
 
         if (!rawCallbackURL) {
             setState('error');
@@ -31,9 +31,18 @@ export const OauthCreate: FC = () => {
             return;
         }
 
-        if (!allowedDomains.includes(callbackURL.hostname)) {
+        if (callbackURL.protocol !== 'https:') {
             setState('error');
-            setError('Disallowed callback URL domain.');
+            setError('Callback URL must use HTTPS.');
+            return;
+        }
+
+        const isAllowedDomain =
+            callbackURL.hostname === ALLOWED_BASE_DOMAIN ||
+            callbackURL.hostname.endsWith(`.${ALLOWED_BASE_DOMAIN}`);
+        if (!isAllowedDomain) {
+            setState('error');
+            setError('Invalid callback URL.');
             return;
         }
 
