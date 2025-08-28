@@ -19,7 +19,7 @@ const logger = createLogger('@/server/index');
 const main = async () => {
     // Get the static directory.
     const dirname = path.dirname(fileURLToPath(import.meta.url));
-    const staticPath = path.join(dirname, 'static');
+    const staticPath = await fsPromises.realpath(path.join(dirname, 'static'));
 
     logger.info('Starting server...');
     const app = new Hono();
@@ -61,7 +61,9 @@ const main = async () => {
         }
 
         // Ensure the file is within the static directory.
-        if (!realPath.startsWith(staticPath)) {
+        const relativePath = path.relative(staticPath, realPath);
+        console.log(relativePath);
+        if (relativePath.startsWith('..') || path.isAbsolute(relativePath)) {
             logger.warn('Path traversal attempt detected: %s', staticFilePath);
             return c.notFound();
         }
