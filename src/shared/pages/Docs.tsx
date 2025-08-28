@@ -6,7 +6,7 @@ export const Docs = () => {
     return (
         <Page
             description='Documentation for the Canvas TRMNL plugin.'
-            title='Canvas TRMNL Docs'
+            title='Docs'
         >
             <div className='flex min-h-screen flex-col'>
                 <section className='flex items-center justify-center bg-radial-[circle_at_bottom] from-indigo-800 to-80% p-8 md:p-16'>

@@ -28,9 +28,8 @@ type ProcedureItems = {
     ) => Promise<z.infer<(typeof API)[Key]['responseSchema']>>;
 };
 
-type ProcedureIdMap = {
-    [Key in (typeof API)[keyof typeof API]['id']]: keyof typeof API;
-};
+type ProcedureId = (typeof API)[keyof typeof API]['id'];
+type ProcedureIdMap = Record<ProcedureId, keyof typeof API>;
 
 const HANDLERS = {
     createConsumer,
@@ -76,9 +75,9 @@ export const createAppApiRoutes = (): Hono => {
             );
         }
 
-        const procedureName = ID_MAP[procedure as keyof typeof ID_MAP];
+        const procedureName = ID_MAP[procedure as keyof ProcedureIdMap];
         logger.info(
-            "Handled by procedure '%s' (%s).",
+            "Routing to procedure '%s' (%s).",
             procedure,
             procedureName,
         );
@@ -94,26 +93,13 @@ export const createAppApiRoutes = (): Hono => {
         }
         const handler = HANDLERS[procedureName];
 
-        type Grouped<T extends keyof typeof API> = {
-            requestSchema: (typeof API)[T]['requestSchema'];
-            handler: (
-                logger: Logger,
-                data: z.infer<(typeof API)[T]['requestSchema']>,
-            ) => Promise<z.infer<(typeof API)[T]['responseSchema']>>;
-        };
-        const grouped: Grouped<typeof procedureName> = {
-            handler: handler as (
-                logger: Logger,
-                data: z.infer<
-                    (typeof API)[typeof procedureName]['requestSchema']
-                >,
-            ) => Promise<
-                z.infer<(typeof API)[typeof procedureName]['responseSchema']>
-            >,
-            requestSchema: procedureData.requestSchema,
-        };
+        type Name = typeof procedureName;
+        const typedHandler = handler as (
+            logger: Logger,
+            data: z.infer<(typeof API)[Name]['requestSchema']>,
+        ) => Promise<z.infer<(typeof API)[Name]['responseSchema']>>;
 
-        return c.json(await grouped.handler(logger, requestData.data));
+        return c.json(await typedHandler(logger, requestData.data));
     });
 
     return app;

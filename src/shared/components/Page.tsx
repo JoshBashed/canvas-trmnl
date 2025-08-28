@@ -6,6 +6,7 @@ import {
 
 interface PageProps {
     title: string;
+    postpendApplicationName?: boolean;
     description: string;
     children: ReactNode;
     enableSSR?: boolean;
@@ -29,7 +30,7 @@ export const Page: FC<PageProps> = (props) => {
         description: props.description,
         enableSSR: ssr,
         statusCode: statusCode,
-        title: props.title,
+        title: `${props.title}${(props.postpendApplicationName ?? true) ? ' | Canvas TRMNL' : ''}`,
     };
 
     if (isServer)

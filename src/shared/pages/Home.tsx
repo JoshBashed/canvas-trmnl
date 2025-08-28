@@ -5,8 +5,9 @@ import { Page } from '@/shared/components/Page.tsx';
 export const Home = () => {
     return (
         <Page
-            description='See your canvas assignments at a glance.'
-            title='Canvas TRMNL'
+            description='See your canvas assignments at a glance, a TRMNL plugin.'
+            postpendApplicationName={false}
+            title='Canvas TRMNL | Assignments At a Glance'
         >
             <div className='flex min-h-screen flex-col'>
                 {/* hero */}
