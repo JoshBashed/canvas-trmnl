@@ -74,6 +74,7 @@ export const Manage: FC = () => {
 
     return (
         <Page
+            description=''
             enableSSR={false}
             title={
                 consumerData === null
@@ -86,7 +87,11 @@ export const Manage: FC = () => {
             >
                 {consumerData === null && error === null && <LoadingIcon />}
                 {error && (
-                    <div className='flex w-full max-w-md flex-col gap-2 rounded-md border border-zinc-700 bg-zinc-900 p-8 shadow'>
+                    <div
+                        aria-live='assertive'
+                        className='flex w-full max-w-md flex-col gap-2 rounded-md border border-zinc-700 bg-zinc-900 p-8 shadow'
+                        role='alert'
+                    >
                         <h2 className='font-bold font-display text-2xl tracking-tight'>
                             Error
                         </h2>
@@ -223,7 +228,11 @@ export const ManagePage: FC<{
                     </div>
                 )}
                 {error && (
-                    <div className='text-right text-red-500 text-sm'>
+                    <div
+                        aria-live='assertive'
+                        className='text-right text-red-500 text-sm'
+                        role='alert'
+                    >
                         {error}
                     </div>
                 )}

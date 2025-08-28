@@ -41,18 +41,19 @@ class APIClient implements BaseAPIClient {
     private logger = createLogger('@/shared/utilities/apiClient');
 
     private constructor() {
-        for (const item in API) {
-            Object.defineProperty(this, item, {
+        const keys = Object.entries(API).map(([_, value]) => value.name);
+        for (const key of keys) {
+            Object.defineProperty(this, key, {
                 configurable: false,
                 enumerable: true,
-                value: this.clientMethod.bind(this, item as keyof typeof API),
+                value: this.clientMethod.bind(this, key),
                 writable: false,
             });
         }
     }
 
     private async clientMethod<T extends keyof typeof API>(
-        methodName: keyof typeof API,
+        methodName: T,
         requestData: z.infer<(typeof API)[T]['requestSchema']>,
     ): Promise<ClientResponse<T>> {
         this.logger.debug("Making '%s' procedure call.", methodName);

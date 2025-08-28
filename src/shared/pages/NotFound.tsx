@@ -1,4 +1,5 @@
 import React, { type FC } from 'react';
+import { Link } from 'react-router';
 import { Page } from '@/shared/components/Page.tsx';
 
 export const NotFound: FC = () => {
@@ -19,12 +20,12 @@ export const NotFound: FC = () => {
                             exist.
                         </p>
                     </div>
-                    <a
+                    <Link
                         className='inline-block rounded-full bg-white px-4 py-2 text-center font-semibold text-black hover:underline'
-                        href='/'
+                        to='/'
                     >
                         Return
-                    </a>
+                    </Link>
                 </div>
             </div>
         </Page>
