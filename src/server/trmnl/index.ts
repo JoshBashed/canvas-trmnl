@@ -9,7 +9,7 @@ export const createTrmnlRoutes = (): Hono => {
     // Redirect routes...
     app.get('/help/', async (c) => {
         createRequestLogger(c);
-        c.redirect('/docs/');
+        return c.redirect('/docs/');
     });
     app.get('/oauth/new/', async (c) => {
         const logger = createRequestLogger(c);
