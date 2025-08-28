@@ -64,7 +64,7 @@ export const webhookInstall = async (c: Context) => {
     if (!trmnlDataQueryResult) {
         logger.error(
             'Failed to query db for consumer: %s',
-            stringifyError(trmnlDataQueryResult),
+            stringifyError(trmnlDataQuery),
         );
         return c.text('Internal server error.', 500);
     }

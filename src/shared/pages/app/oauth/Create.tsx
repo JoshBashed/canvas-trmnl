@@ -12,12 +12,28 @@ export const OauthCreate: FC = () => {
 
     useEffect(() => {
         const urlParams = new URLSearchParams(window.location.search);
-        const callbackURL = urlParams.get('callback_url');
+        const rawCallbackURL = urlParams.get('callback_url');
         const code = urlParams.get('code');
+        const allowedDomains = ['usetrmnl.com'];
 
-        if (!callbackURL) {
+        if (!rawCallbackURL) {
             setState('error');
             setError('No callback URL provided.');
+            return;
+        }
+
+        let callbackURL: URL;
+        try {
+            callbackURL = new URL(rawCallbackURL);
+        } catch {
+            setState('error');
+            setError('Invalid callback URL.');
+            return;
+        }
+
+        if (!allowedDomains.includes(callbackURL.hostname)) {
+            setState('error');
+            setError('Disallowed callback URL domain.');
             return;
         }
 
@@ -44,7 +60,10 @@ export const OauthCreate: FC = () => {
             }
 
             setState('success');
-            setTimeout(() => window.open(callbackURL, '_self'), 200);
+            setTimeout(
+                () => window.location.replace(callbackURL.toString()),
+                3000,
+            );
         })();
     }, []);
 
