@@ -128,24 +128,17 @@ export const fetchCourseAssignments = async (
             },
         },
     );
-    if (!responseSuccess) {
-        return [false, 'requestError'];
-    }
+    if (!responseSuccess) return [false, 'requestError'];
 
     // Parse the response.
     const [jsonSuccess, json] = await performSafeJsonParse(
         await response.text(),
     );
-    if (!jsonSuccess) {
-        return [false, 'jsonParseError'];
-    }
+    if (!jsonSuccess) return [false, 'jsonParseError'];
 
     // Validate the response.
     const result = CanvasCourseAssignmentsSchema.safeParse(json);
-    if (!result.success) {
-        console.log(result.error);
-        return [false, 'schemaValidationError'];
-    }
+    if (!result.success) return [false, 'schemaValidationError'];
 
     return [true, result.data];
 };
