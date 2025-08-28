@@ -30,29 +30,27 @@ const main = async () => {
     logger.info('Starting server...');
     const app = new Hono();
 
-    app.get('/static/*', async (c) => {
+    app.get('/*', async (c, next) => {
         const logger = createRequestLogger(c);
-        const staticFilePath = c.req.path.replace('/static/', '');
+        const staticFilePath = c.req.path;
         const filePath = path.resolve(path.join(staticPath, staticFilePath));
 
         // Resolve the file path to the absolute path.
         const [realPathSuccess, realPath] = await tryCatch(
             fsPromises.realpath(filePath),
         );
-        if (!realPathSuccess) {
-            logger.error(
-                'Failed to resolve file path: %s',
-                stringifyError(realPath),
-            );
-            return c.notFound();
-        }
+        if (!realPathSuccess) return await next();
 
         // Ensure the file is within the static directory.
         const relativePath = path.relative(staticPath, realPath);
-        if (relativePath.startsWith('..') || path.isAbsolute(relativePath)) {
-            logger.warn('Path traversal attempt detected: %s', staticFilePath);
-            return c.notFound();
-        }
+        if (relativePath.startsWith('..') || path.isAbsolute(relativePath))
+            return await next();
+
+        // Ensure the file exists.
+        const [fileStatSuccess, fileStat] = await tryCatch(
+            fsPromises.stat(realPath),
+        );
+        if (!fileStatSuccess || !fileStat.isFile()) return await next();
 
         // Try to read the file.
         const [fileSuccess, file] = await tryCatch(
@@ -60,7 +58,7 @@ const main = async () => {
         );
         if (!fileSuccess) {
             logger.error('Failed to read file: %s', stringifyError(file));
-            return c.notFound();
+            return await next();
         }
 
         // Calculate a hash
@@ -107,22 +105,26 @@ const main = async () => {
                 statusCodeStartIndex + STATUS_CODE_START.length,
                 statusCodeEndIndex,
             );
-            console.log(statusCodeString);
             const parsedStatusCode = parseInt(statusCodeString, 10);
             // Ensure the status code is within the valid range.
             if (
                 !Number.isNaN(parsedStatusCode) &&
                 parsedStatusCode >= 100 &&
                 parsedStatusCode <= 599 &&
-                CONTENTLESS_STATUS_CODES.includes(parsedStatusCode)
+                !CONTENTLESS_STATUS_CODES.includes(parsedStatusCode)
             ) {
                 statusCode = parsedStatusCode;
             }
         }
 
-        return c.html(html, {
+        return c.html(`<!DOCTYPE html>${html}`, {
             headers: {
+                'Content-Security-Policy':
+                    "script-src 'self'; object-src 'self'; base-uri 'self'; frame-ancestors 'none';",
                 'Content-Type': 'text/html',
+                'Cross-Origin-Opener-Policy': 'same-origin',
+                'Strict-Transport-Security':
+                    'max-age=31536000; includeSubDomains; preload',
             },
             status: statusCode as ContentfulStatusCode,
         });

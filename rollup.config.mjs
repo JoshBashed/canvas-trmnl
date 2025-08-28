@@ -31,7 +31,7 @@ export default defineConfig([
     {
         input: 'src/client/index.tsx',
         output: {
-            file: 'dist/static/index.js',
+            file: 'dist/static/assets/index.js',
             format: 'cjs',
             name: 'index',
         },
@@ -64,7 +64,7 @@ export default defineConfig([
     {
         input: 'src/shared/styles/globals.css',
         output: {
-            file: 'dist/static/styles.css',
+            file: 'dist/static/assets/styles.css',
         },
         plugins: [
             postcss({

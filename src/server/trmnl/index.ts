@@ -27,7 +27,7 @@ export const createTrmnlRoutes = (): Hono => {
         }
 
         return c.redirect(
-            `/oauth/create/?code=${encodeURIComponent(code)}&callback_url=${encodeURIComponent(callbackUrl)}`,
+            `/app/oauth/create/?code=${encodeURIComponent(code)}&callback_url=${encodeURIComponent(callbackUrl)}`,
         );
     });
     app.get('/settings/', async (c) => {
@@ -45,7 +45,7 @@ export const createTrmnlRoutes = (): Hono => {
         }
 
         return c.redirect(
-            `/manage/${encodeURIComponent(code)}/?token=${encodeURIComponent(jwt)}`,
+            `/app/manage/${encodeURIComponent(code)}/?token=${encodeURIComponent(jwt)}`,
         );
     });
 

@@ -1,10 +1,10 @@
 import React, { type FC } from 'react';
 import { BrowserRouter, Route, Routes, StaticRouter } from 'react-router';
+import { Manage } from '@/shared/pages/app/Manage.tsx';
+import { OauthCreate } from '@/shared/pages/app/oauth/Create.tsx';
 import { Docs } from '@/shared/pages/Docs.tsx';
 import { Home } from '@/shared/pages/Home.tsx';
-import { Manage } from '@/shared/pages/Manage.tsx';
 import { NotFound } from '@/shared/pages/NotFound.tsx';
-import { OauthCreate } from '@/shared/pages/oauth/Create.tsx';
 
 const AppRoutes = () => {
     return (
@@ -12,10 +12,12 @@ const AppRoutes = () => {
             <Route element={<NotFound />} path='*' />
             <Route element={<Home />} index />
             <Route element={<Docs />} path='docs' />
-            <Route path='oauth'>
-                <Route element={<OauthCreate />} path='create' />
+            <Route path='app'>
+                <Route path='oauth'>
+                    <Route element={<OauthCreate />} path='create' />
+                </Route>
+                <Route element={<Manage />} path='manage/:id' />
             </Route>
-            <Route element={<Manage />} path='manage/:id' />
         </Routes>
     );
 };

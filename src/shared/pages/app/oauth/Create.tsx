@@ -49,7 +49,11 @@ export const OauthCreate: FC = () => {
     }, []);
 
     return (
-        <Page enableSSR={false} title='Connecting to TRMNL'>
+        <Page
+            description='Creating a plugin instance...'
+            enableSSR={false}
+            title='Connecting to TRMNL'
+        >
             <div className='flex min-h-screen items-center justify-center bg-radial-[circle_at_bottom] bg-zinc-950 from-indigo-800 to-80% p-8 text-white'>
                 <div className='flex w-full max-w-md flex-col gap-2 rounded-md border border-zinc-700 bg-zinc-900 p-8 shadow'>
                     {state === 'loading' && (

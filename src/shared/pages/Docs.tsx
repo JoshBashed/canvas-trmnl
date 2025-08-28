@@ -4,7 +4,10 @@ import { Page } from '@/shared/components/Page.tsx';
 
 export const Docs = () => {
     return (
-        <Page title='Canvas TRMNL Docs'>
+        <Page
+            description='Documentation for the Canvas TRMNL plugin.'
+            title='Canvas TRMNL Docs'
+        >
             <div className='flex min-h-screen flex-col'>
                 <section className='flex items-center justify-center bg-radial-[circle_at_bottom] from-indigo-800 to-80% p-8 md:p-16'>
                     <div className='flex w-full max-w-4xl flex-col gap-8'>

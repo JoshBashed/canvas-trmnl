@@ -4,10 +4,13 @@ import { Page } from '@/shared/components/Page.tsx';
 
 export const Home = () => {
     return (
-        <Page title='Canvas TRMNL'>
+        <Page
+            description='See your canvas assignments at a glance.'
+            title='Canvas TRMNL'
+        >
             <div className='flex min-h-screen flex-col'>
                 {/* hero */}
-                <section className='flex items-center justify-center bg-radial-[circle_at_bottom] from-indigo-800 to-80% p-8 md:min-h-[60vh] md:p-16'>
+                <div className='flex items-center justify-center bg-radial-[circle_at_bottom] from-indigo-800 to-80% p-8 md:min-h-[60vh] md:p-16'>
                     <div className='flex w-full max-w-4xl flex-col gap-8'>
                         <div className='flex flex-col gap-4'>
                             <h1 className='font-bold font-display text-4xl md:text-6xl'>
@@ -24,8 +27,8 @@ export const Home = () => {
                             Add to TRMNL
                         </a>
                     </div>
-                </section>
-                <section className='flex items-center justify-center bg-zinc-900 p-8 md:p-16'>
+                </div>
+                <div className='flex items-center justify-center bg-zinc-900 p-8 md:p-16'>
                     <div className='flex w-full max-w-4xl flex-col gap-8'>
                         <h2 className='font-bold font-display text-3xl md:text-4xl'>
                             Features
@@ -57,7 +60,7 @@ export const Home = () => {
                             </div>
                         </div>
                     </div>
-                </section>
+                </div>
                 <Footer />
             </div>
         </Page>
