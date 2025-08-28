@@ -16,7 +16,7 @@ import { stringifyError, tryCatch } from '@/shared/utilities/tryCatch.ts';
 
 const WebhookInstallSchema = z.object({
     user: z.object({
-        email: z.string().email(),
+        email: z.email(),
         first_name: z.string(),
         last_name: z.string(),
         locale: z.string(),
@@ -25,7 +25,7 @@ const WebhookInstallSchema = z.object({
         time_zone: z.string(),
         time_zone_iana: z.string(),
         utc_offset: z.number(),
-        uuid: z.string().uuid(),
+        uuid: z.uuid(),
     }),
 });
 
