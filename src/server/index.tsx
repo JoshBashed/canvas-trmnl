@@ -1,3 +1,4 @@
+import crypto from 'node:crypto';
 import fsPromises from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -62,30 +63,35 @@ const main = async () => {
 
         // Ensure the file is within the static directory.
         const relativePath = path.relative(staticPath, realPath);
-        console.log(relativePath);
         if (relativePath.startsWith('..') || path.isAbsolute(relativePath)) {
             logger.warn('Path traversal attempt detected: %s', staticFilePath);
             return c.notFound();
         }
 
-        // Check if the file exists.
-        const [fileExistsSuccess, fileExists] = await tryCatch(
-            fsPromises.access(realPath),
+        // Try to read the file.
+        const [fileSuccess, file] = await tryCatch(
+            fsPromises.readFile(realPath),
         );
-        if (!fileExistsSuccess) {
-            logger.error('File not found: %s', stringifyError(fileExists));
+        if (!fileSuccess) {
+            logger.error('Failed to read file: %s', stringifyError(file));
             return c.notFound();
         }
 
+        // Calculate a hash
+        const hash = crypto.createHash('sha256').update(file).digest('hex');
+
+        // Get the request header's If-None-Match.
+        const ifNoneMatch = c.req.header('If-None-Match');
+        if (ifNoneMatch === `"${hash}"`) {
+            return c.body(null, 304);
+        }
+
         // Get the extension of the file.
-        const contentType = mime.lookup(filePath);
-        const fileBuffer = await fsPromises.readFile(realPath);
-        return c.body(new Uint8Array(fileBuffer), {
+        const contentType = mime.lookup(filePath) || 'application/octet-stream';
+        return c.body(new Uint8Array(file), {
             headers: {
-                'Content-Type':
-                    contentType === false
-                        ? 'application/octet-stream'
-                        : contentType,
+                'Content-Type': contentType,
+                ETag: `"${hash}"`,
             },
         });
     });
