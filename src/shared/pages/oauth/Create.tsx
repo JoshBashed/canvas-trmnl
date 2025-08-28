@@ -1,5 +1,6 @@
 import React, { type FC, useEffect, useState } from 'react';
 import { LoadingIcon } from '@/shared/components/LoadingIcon.tsx';
+import { Page } from '@/shared/components/Page.tsx';
 import { apiClient } from '@/shared/utilities/apiClient.ts';
 
 export const OauthCreate: FC = () => {
@@ -48,40 +49,44 @@ export const OauthCreate: FC = () => {
     }, []);
 
     return (
-        <div className='flex min-h-screen items-center justify-center bg-radial-[circle_at_bottom] bg-zinc-950 from-indigo-800 to-80% p-8 text-white'>
-            <div className='flex w-full max-w-md flex-col gap-2 rounded-md border border-zinc-700 bg-zinc-900 p-8 shadow'>
-                {state === 'loading' && (
-                    <>
-                        <div className='flex gap-2'>
-                            <LoadingIcon />
+        <Page enableSSR={false} title='Connecting to TRMNL'>
+            <div className='flex min-h-screen items-center justify-center bg-radial-[circle_at_bottom] bg-zinc-950 from-indigo-800 to-80% p-8 text-white'>
+                <div className='flex w-full max-w-md flex-col gap-2 rounded-md border border-zinc-700 bg-zinc-900 p-8 shadow'>
+                    {state === 'loading' && (
+                        <>
+                            <div className='flex gap-2'>
+                                <LoadingIcon />
+                                <h1 className='font-bold font-display text-2xl tracking-tight'>
+                                    Authenticating...
+                                </h1>
+                            </div>
+                            {stateText && (
+                                <p className='text-sm text-zinc-400'>
+                                    {stateText}
+                                </p>
+                            )}
+                        </>
+                    )}
+                    {state === 'error' && (
+                        <>
                             <h1 className='font-bold font-display text-2xl tracking-tight'>
-                                Authenticating...
+                                Error
                             </h1>
-                        </div>
-                        {stateText && (
-                            <p className='text-sm text-zinc-400'>{stateText}</p>
-                        )}
-                    </>
-                )}
-                {state === 'error' && (
-                    <>
-                        <h1 className='font-bold font-display text-2xl tracking-tight'>
-                            Error
-                        </h1>
-                        <p className='text-sm text-zinc-400'>{error}</p>
-                    </>
-                )}
-                {state === 'success' && (
-                    <>
-                        <h1 className='font-bold font-display text-2xl tracking-tight'>
-                            Success
-                        </h1>
-                        <p className='text-sm text-zinc-400'>
-                            You will be redirected shortly.
-                        </p>
-                    </>
-                )}
+                            <p className='text-sm text-zinc-400'>{error}</p>
+                        </>
+                    )}
+                    {state === 'success' && (
+                        <>
+                            <h1 className='font-bold font-display text-2xl tracking-tight'>
+                                Success
+                            </h1>
+                            <p className='text-sm text-zinc-400'>
+                                You will be redirected shortly.
+                            </p>
+                        </>
+                    )}
+                </div>
             </div>
-        </div>
+        </Page>
     );
 };

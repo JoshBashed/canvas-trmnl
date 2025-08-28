@@ -4,6 +4,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { serve } from '@hono/node-server';
 import { Hono } from 'hono';
+import type { ContentfulStatusCode } from 'hono/utils/http-status';
 import mime from 'mime-types';
 import React from 'react';
 import { renderToString } from 'react-dom/server';
@@ -17,6 +18,10 @@ import { stringifyError, tryCatch } from '@/shared/utilities/tryCatch.ts';
 
 const logger = createLogger('@/server/index');
 
+const STATUS_CODE_START = 'data-status-code="';
+const STATUS_CODE_END = '"';
+const CONTENTLESS_STATUS_CODES = [101, 204, 205, 304];
+
 const main = async () => {
     // Get the static directory.
     const dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -25,25 +30,6 @@ const main = async () => {
     logger.info('Starting server...');
     const app = new Hono();
 
-    app.get('/', async (c) => {
-        return c.redirect('/app');
-    });
-
-    // Serve the app.
-    app.get('/app/*', async (c) => {
-        // Render the react app.
-        const html = renderToString(
-            <ServerApp pageName='App' url={c.req.path} />,
-        );
-
-        return c.html(html, {
-            headers: {
-                'Content-Type': 'text/html',
-            },
-        });
-    });
-
-    // Serve static files
     app.get('/static/*', async (c) => {
         const logger = createRequestLogger(c);
         const staticFilePath = c.req.path.replace('/static/', '');
@@ -103,6 +89,44 @@ const main = async () => {
 
     app.route('/trmnl', createTrmnlRoutes());
     app.route('/api', createAppApiRoutes());
+
+    // Serve the app.
+    app.get('/*', async (c) => {
+        // Render the react app.
+        const html = renderToString(
+            <ServerApp pageName='App' url={c.req.path} />,
+        );
+        let statusCode = 200;
+        const statusCodeStartIndex = html.indexOf(STATUS_CODE_START);
+        const statusCodeEndIndex = html.indexOf(
+            STATUS_CODE_END,
+            statusCodeStartIndex + STATUS_CODE_START.length,
+        );
+        if (statusCodeStartIndex !== -1 && statusCodeEndIndex !== -1) {
+            const statusCodeString = html.substring(
+                statusCodeStartIndex + STATUS_CODE_START.length,
+                statusCodeEndIndex,
+            );
+            console.log(statusCodeString);
+            const parsedStatusCode = parseInt(statusCodeString, 10);
+            // Ensure the status code is within the valid range.
+            if (
+                !Number.isNaN(parsedStatusCode) &&
+                parsedStatusCode >= 100 &&
+                parsedStatusCode <= 599 &&
+                CONTENTLESS_STATUS_CODES.includes(parsedStatusCode)
+            ) {
+                statusCode = parsedStatusCode;
+            }
+        }
+
+        return c.html(html, {
+            headers: {
+                'Content-Type': 'text/html',
+            },
+            status: statusCode as ContentfulStatusCode,
+        });
+    });
 
     serve({
         fetch: app.fetch,
