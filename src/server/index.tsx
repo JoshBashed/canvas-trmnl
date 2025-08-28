@@ -81,17 +81,22 @@ const main = async () => {
         const hash = crypto.createHash('sha256').update(file).digest('hex');
 
         // Get the request header's If-None-Match.
-        const ifNoneMatch = c.req.header('If-None-Match');
-        if (ifNoneMatch === `"${hash}"`) {
+        const ifNoneMatch =
+            c.req
+                .header('If-None-Match')
+                ?.split(',')
+                .map((etag) => etag.trim()) ?? [];
+        if (ifNoneMatch.includes(`"${hash}"`)) {
             return c.body(null, 304);
         }
 
-        // Get the extension of the file.
+        // Determine content type.
         const contentType = mime.lookup(filePath) || 'application/octet-stream';
         return c.body(new Uint8Array(file), {
             headers: {
                 'Content-Type': contentType,
                 ETag: `"${hash}"`,
+                'X-Content-Type-Options': 'nosniff',
             },
         });
     });
