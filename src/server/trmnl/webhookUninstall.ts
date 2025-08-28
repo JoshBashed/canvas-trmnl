@@ -15,7 +15,7 @@ import {
 import { stringifyError, tryCatch } from '@/shared/utilities/tryCatch.ts';
 
 const WebhookUninstallSchema = z.object({
-    user_uuid: z.string().uuid(),
+    user_uuid: z.uuid(),
 });
 
 export const webhookUninstall = async (c: Context) => {

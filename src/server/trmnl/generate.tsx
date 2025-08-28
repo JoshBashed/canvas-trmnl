@@ -16,7 +16,7 @@ import {
 import { stringifyError, tryCatch } from '@/shared/utilities/tryCatch.ts';
 
 const GenerateSchema = z.object({
-    user_uuid: z.string().uuid(),
+    user_uuid: z.uuid(),
 });
 
 const renderAll = (
