@@ -1,6 +1,7 @@
 import React, { type FC, useEffect, useId, useMemo, useState } from 'react';
 import { useLocation, useParams } from 'react-router';
 import { LoadingIcon } from '@/shared/components/LoadingIcon.tsx';
+import { Page } from '@/shared/components/Page.tsx';
 import { apiClient } from '@/shared/utilities/apiClient.ts';
 
 const normalizeDomain = (domain: string): string | null => {
@@ -72,27 +73,36 @@ export const Manage: FC = () => {
     }, [params.id, token]);
 
     return (
-        <div
-            className={`flex min-h-screen justify-center bg-radial-[circle_at_bottom] bg-zinc-950 from-indigo-800 to-80% p-8 text-white md:p-16 ${consumerData === null ? 'items-center' : ''}`}
+        <Page
+            enableSSR={false}
+            title={
+                consumerData === null
+                    ? 'Settings'
+                    : `Settings (${consumerData.settingsId})`
+            }
         >
-            {consumerData === null && error === null && <LoadingIcon />}
-            {error && (
-                <div className='flex w-full max-w-md flex-col gap-2 rounded-md border border-zinc-700 bg-zinc-900 p-8 shadow'>
-                    <h2 className='font-bold font-display text-2xl tracking-tight'>
-                        Error
-                    </h2>
-                    <p className='text-sm text-zinc-400'>{error}</p>
-                </div>
-            )}
-            {consumerData && (
-                <ManagePage
-                    name={consumerData.name}
-                    token={token ?? ''}
-                    trmnlId={consumerData.trmnlId}
-                    trmnlSettingsId={consumerData.settingsId.toString()}
-                />
-            )}
-        </div>
+            <div
+                className={`flex min-h-screen justify-center bg-radial-[circle_at_bottom] bg-zinc-950 from-indigo-800 to-80% p-8 text-white md:p-16 ${consumerData === null ? 'items-center' : ''}`}
+            >
+                {consumerData === null && error === null && <LoadingIcon />}
+                {error && (
+                    <div className='flex w-full max-w-md flex-col gap-2 rounded-md border border-zinc-700 bg-zinc-900 p-8 shadow'>
+                        <h2 className='font-bold font-display text-2xl tracking-tight'>
+                            Error
+                        </h2>
+                        <p className='text-sm text-zinc-400'>{error}</p>
+                    </div>
+                )}
+                {consumerData && (
+                    <ManagePage
+                        name={consumerData.name}
+                        token={token ?? ''}
+                        trmnlId={consumerData.trmnlId}
+                        trmnlSettingsId={consumerData.settingsId.toString()}
+                    />
+                )}
+            </div>
+        </Page>
     );
 };
 

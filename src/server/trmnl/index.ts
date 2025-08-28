@@ -9,7 +9,7 @@ export const createTrmnlRoutes = (): Hono => {
     // Redirect routes...
     app.get('/help/', async (c) => {
         createRequestLogger(c);
-        c.redirect('/app/help/');
+        c.redirect('/docs/');
     });
     app.get('/oauth/new/', async (c) => {
         const logger = createRequestLogger(c);
@@ -27,7 +27,7 @@ export const createTrmnlRoutes = (): Hono => {
         }
 
         return c.redirect(
-            `/app/oauth/create/?code=${encodeURIComponent(code)}&callback_url=${encodeURIComponent(callbackUrl)}`,
+            `/oauth/create/?code=${encodeURIComponent(code)}&callback_url=${encodeURIComponent(callbackUrl)}`,
         );
     });
     app.get('/settings/', async (c) => {
@@ -45,7 +45,7 @@ export const createTrmnlRoutes = (): Hono => {
         }
 
         return c.redirect(
-            `/app/manage/${encodeURIComponent(code)}/?token=${encodeURIComponent(jwt)}`,
+            `/manage/${encodeURIComponent(code)}/?token=${encodeURIComponent(jwt)}`,
         );
     });
 

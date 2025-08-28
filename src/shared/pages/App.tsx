@@ -1,7 +1,6 @@
 import React, { type FC } from 'react';
 import { BrowserRouter, Route, Routes, StaticRouter } from 'react-router';
-import { ServerPage } from '@/shared/components/ServerPage.tsx';
-import { Help } from '@/shared/pages/Help.tsx';
+import { Docs } from '@/shared/pages/Docs.tsx';
 import { Home } from '@/shared/pages/Home.tsx';
 import { Manage } from '@/shared/pages/Manage.tsx';
 import { NotFound } from '@/shared/pages/NotFound.tsx';
@@ -11,14 +10,12 @@ const AppRoutes = () => {
     return (
         <Routes>
             <Route element={<NotFound />} path='*' />
-            <Route path='app'>
-                <Route element={<Home />} index />
-                <Route element={<Help />} path='help' />
-                <Route path='oauth'>
-                    <Route element={<OauthCreate />} path='create' />
-                </Route>
-                <Route element={<Manage />} path='manage/:id' />
+            <Route element={<Home />} index />
+            <Route element={<Docs />} path='docs' />
+            <Route path='oauth'>
+                <Route element={<OauthCreate />} path='create' />
             </Route>
+            <Route element={<Manage />} path='manage/:id' />
         </Routes>
     );
 };
@@ -33,10 +30,8 @@ export const ClientApp: FC = () => {
 
 export const ServerApp: FC<{ url: string; pageName: string }> = ({ url }) => {
     return (
-        <ServerPage title='App'>
-            <StaticRouter location={url}>
-                <AppRoutes />
-            </StaticRouter>
-        </ServerPage>
+        <StaticRouter location={url}>
+            <AppRoutes />
+        </StaticRouter>
     );
 };
