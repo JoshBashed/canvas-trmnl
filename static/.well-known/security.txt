@@ -1,0 +1,3 @@
+# Our security address:
+Contact: mailto:josh+canvas-trmnl-security@bashed.sh
+Expires: 2025-12-31T23:59:59.000Z

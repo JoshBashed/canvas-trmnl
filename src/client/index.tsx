@@ -1,8 +1,11 @@
 import React, { StrictMode } from 'react';
-import { hydrateRoot } from 'react-dom/client';
+import { createRoot, hydrateRoot } from 'react-dom/client';
 import { ClientApp } from '@/shared/pages/App.tsx';
+import {
+    ROOT_ELEMENT_ID,
+    SSR_DATA_ATTRIBUTE_NAME,
+} from '@/shared/utilities/clientServerReactShared.ts';
 import { createLogger } from '@/shared/utilities/loggingUtilities.ts';
-import { ROOT_ELEMENT_ID } from '@/shared/utilities/rootElementId.ts';
 
 const logger = createLogger('@/client/index');
 
@@ -13,10 +16,15 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
     }
 
-    hydrateRoot(
-        root,
+    const app = (
         <StrictMode>
             <ClientApp />
-        </StrictMode>,
+        </StrictMode>
     );
+
+    const didUseSSR =
+        document.documentElement.getAttribute(SSR_DATA_ATTRIBUTE_NAME) ===
+        'true';
+    if (didUseSSR) hydrateRoot(root, app);
+    else createRoot(root).render(app);
 });
