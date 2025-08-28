@@ -61,7 +61,7 @@ class APIClient implements BaseAPIClient {
             {
                 body: JSON.stringify({
                     data: requestData,
-                    procedure: methodName,
+                    procedure: API[methodName].id,
                 }),
                 headers: {
                     'Content-Type': 'application/json',
@@ -113,6 +113,9 @@ class APIClient implements BaseAPIClient {
                 methodName,
                 parseResult.data,
             );
+            // See https://github.com/colinhacks/zod/issues/5154
+            // FIXME: Remove this once the issue is resolved
+            // @ts-expect-error
             return [true, parseResult.data];
         }
 

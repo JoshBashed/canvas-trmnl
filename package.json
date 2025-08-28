@@ -2,16 +2,16 @@
     "author": "JoshuaBrest <36625023+JoshuaBrest@users.noreply.github.com>",
     "dependencies": {
         "@hono/node-server": "^1.19.0",
-        "drizzle-orm": "^0.41.0",
+        "drizzle-orm": "^0.44.5",
         "hono": "^4.9.4",
-        "jose": "^6.0.13",
+        "jose": "^6.1.0",
         "mime-types": "^3.0.1",
         "pg": "^8.16.3",
         "react": "^19.1.1",
         "react-dom": "^19.1.1",
         "react-router": "^7.8.2",
         "rollup": "^4.49.0",
-        "zod": "^3.25.76"
+        "zod": "^4.1.4"
     },
     "description": "Instructure Canvas LMS TRMNL plugin.",
     "devDependencies": {
@@ -29,7 +29,7 @@
         "@types/react": "^19.1.12",
         "@types/react-dom": "^19.1.8",
         "concurrently": "^9.2.1",
-        "drizzle-kit": "^0.30.6",
+        "drizzle-kit": "^0.31.4",
         "postcss": "^8.5.6",
         "rollup-plugin-copy": "^3.5.0",
         "rollup-plugin-postcss": "^4.0.2",
@@ -44,7 +44,7 @@
     "license": "ISC",
     "main": "dist/index.cjs",
     "name": "canvas-trmnl",
-    "packageManager": "pnpm@10.6.5",
+    "packageManager": "pnpm@10.15.0",
     "pnpm": {
         "onlyBuiltDependencies": [
             "@biomejs/biome",
