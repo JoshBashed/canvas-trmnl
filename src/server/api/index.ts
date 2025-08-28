@@ -31,9 +31,6 @@ type ProcedureItems = {
     ) => Promise<z.infer<(typeof API)[Key]['responseSchema']>>;
 };
 
-type ProcedureId = (typeof API)[keyof typeof API]['id'];
-type ProcedureIdMap = Record<ProcedureId, keyof typeof API>;
-
 const HANDLERS = {
     createConsumer,
     fetchConsumerData,
@@ -45,11 +42,9 @@ if (new Set(ids).size !== ids.length) {
     createLogger('@/server/api/index').fatal('Duplicate procedure IDs found.');
 }
 
-const ID_MAP: ProcedureIdMap = Object.freeze(
-    Object.fromEntries(
-        Object.entries(API).map(([key, value]) => [value.id, key] as const),
-    ),
-) as ProcedureIdMap;
+const ID_MAP = new Map(
+    Object.entries(API).map(([_, value]) => [value.id, value.name] as const),
+);
 
 export const createAppApiRoutes = (): Hono => {
     const app = new Hono();
@@ -77,7 +72,10 @@ export const createAppApiRoutes = (): Hono => {
         }
 
         const { procedure, data } = procedureResult.data;
-        if (!Object.hasOwn(ID_MAP, procedure)) {
+        const procedureName = ID_MAP.get(
+            procedure as (typeof API)[keyof typeof API]['id'],
+        );
+        if (!procedureName) {
             logger.info("Unknown procedure '%s'.", procedure);
             return c.json(
                 createProcedureError({ data: 'procedureNotFound' }),
@@ -85,7 +83,6 @@ export const createAppApiRoutes = (): Hono => {
             );
         }
 
-        const procedureName = ID_MAP[procedure as keyof ProcedureIdMap];
         logger.info(
             "Routing to procedure '%s' (%s).",
             procedure,
