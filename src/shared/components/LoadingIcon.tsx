@@ -1,5 +1,7 @@
 import React, { type FC } from 'react';
 
+const SVG_GRADIENT_ID = 'loading-gradient';
+
 export const LoadingIcon: FC = () => {
     return (
         <svg
@@ -15,6 +17,7 @@ export const LoadingIcon: FC = () => {
                 fx='.66'
                 fy='.3125'
                 gradientTransform='scale(1.5)'
+                id={SVG_GRADIENT_ID}
             >
                 <stop offset='0' stopColor='#FFFFFF' />
                 <stop offset='.3' stopColor='#FFFFFF' stopOpacity='.9' />
@@ -27,7 +30,7 @@ export const LoadingIcon: FC = () => {
                 cy='100'
                 fill='none'
                 r='70'
-                stroke='url(#a9)'
+                stroke={`url(#${SVG_GRADIENT_ID})`}
                 strokeDasharray='200 1000'
                 strokeDashoffset='0'
                 strokeLinecap='round'
