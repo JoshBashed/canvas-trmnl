@@ -18,7 +18,7 @@ const GenerateResponseSchema = z.object({
 });
 
 const CREATE_DATE = (offset: number) =>
-    new Date(Date.now() + offset * 1000).toISOString();
+    new Date(Date.now() + offset * 60 * 1000).toISOString();
 
 const STATIC_DATA = {
     assignments: {
