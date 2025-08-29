@@ -32,12 +32,13 @@ type GenerateCourse = Generate['courses'][number];
 
 export const createDevRoutes = (): Hono => {
     const app = new Hono();
+    const serverId = crypto.randomUUID();
 
     app.get('/long-polling/', async (c) => {
         await new Promise((resolve) =>
             setTimeout(resolve, LONG_POLLING_TIMEOUT),
         );
-        return c.body(null, 204);
+        return c.text(serverId);
     });
 
     app.post('/generate/', async (c) => {
