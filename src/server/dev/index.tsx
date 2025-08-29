@@ -34,7 +34,7 @@ export const createDevRoutes = (): Hono => {
     const app = new Hono();
     const serverId = crypto.randomUUID();
 
-    app.get('/long-polling/', async (c) => {
+    app.post('/long-polling/', async (c) => {
         await new Promise((resolve) =>
             setTimeout(resolve, LONG_POLLING_TIMEOUT),
         );

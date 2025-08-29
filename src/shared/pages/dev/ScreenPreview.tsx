@@ -39,7 +39,7 @@ const STATIC_DATA = {
             name: 'Unit 2 Quiz',
         },
         '303': {
-            counseId: 202,
+            courseId: 202,
             description: 'Figma file link: https://www.figma.com/file/xyz',
             dueAt: CREATE_DATE(60 * 24 * 5),
             id: 303,
@@ -123,8 +123,10 @@ export const ScreenPreview: FC = () => {
         const interval = setInterval(async () => {
             if (inFetch) return;
             inFetch = true;
-            const [responseResult, response] =
-                await performSafeRequest(DEV_POLLING_PATH);
+            const [responseResult, response] = await performSafeRequest(
+                DEV_POLLING_PATH,
+                { method: 'POST' },
+            );
             if (!responseResult) {
                 setRequiresRefresh(true);
                 inFetch = false;
