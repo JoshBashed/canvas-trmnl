@@ -68,15 +68,15 @@ export const createDevRoutes = (): Hono => {
             courses.set(Number(id), course);
         }
 
-        return c.json({
-            ...renderAll(({ layout }) => (
+        return c.json(
+            renderAll(({ layout }) => (
                 <TodoListDisplay
                     assignments={assignments}
                     courses={courses}
                     layout={layout}
                 />
             )),
-        });
+        );
     });
 
     return app;
