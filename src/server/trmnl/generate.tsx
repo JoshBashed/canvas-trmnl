@@ -19,7 +19,7 @@ const GenerateSchema = z.object({
     user_uuid: z.uuid(),
 });
 
-const renderAll = (
+export const renderAll = (
     Child: FC<{
         layout: 'full' | 'halfVertical' | 'halfHorizontal' | 'quadrant';
     }>,

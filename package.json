@@ -54,13 +54,13 @@
         ]
     },
     "scripts": {
-        "build": "rollup -c --environment NODE_ENV:production",
+        "build": "NODE_ENV=production rollup -c --environment NODE_ENV:production",
         "check": "biome check --write",
-        "dev": "concurrently \"pnpm run watch\" \"node --env-file .env --watch ./dist/index.cjs\"",
+        "dev": "NODE_ENV=development concurrently \"pnpm run watch --environment NODE_ENV:development\" \"node --env-file .env --watch ./dist/index.cjs\"",
         "drizzle:generate": "drizzle-kit generate",
         "drizzle:migrate": "drizzle-kit migrate",
         "drizzle:up": "drizzle-kit up",
-        "start": "node .",
+        "start": "NODE_ENV=production node .",
         "typecheck": "tsc --noEmit",
         "watch": "rollup -c --watch"
     },
