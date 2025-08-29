@@ -10,6 +10,7 @@ import React from 'react';
 import { renderToString } from 'react-dom/server';
 import { createAppApiRoutes } from '@/server/api/index.ts';
 import { appEnv } from '@/server/appEnv.ts';
+import { createDevRoutes } from '@/server/dev/index.tsx';
 import { createTrmnlRoutes } from '@/server/trmnl/index.ts';
 import { createRequestLogger } from '@/server/utilities/honoUtilities.ts';
 import { ServerApp } from '@/shared/pages/App.tsx';
@@ -87,6 +88,7 @@ const main = async () => {
 
     app.route('/trmnl', createTrmnlRoutes());
     app.route('/api', createAppApiRoutes());
+    if (appEnv.dev) app.route('/dev', createDevRoutes());
 
     // Serve the app.
     app.get('/*', async (c) => {

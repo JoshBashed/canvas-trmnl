@@ -46,7 +46,8 @@ export class Logger {
             return;
         }
         if (LOG_LEVEL_MAP[level] < LOG_LEVEL_MAP[this.logLevel]) return;
-        console.log(
+        const method = level === 'fatal' ? 'error' : level;
+        console[method](
             `%s [%s] ${message}`,
             module ?? 'global',
             level.toUpperCase(),
