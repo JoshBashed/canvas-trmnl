@@ -4,6 +4,10 @@ import { CanvasLogo } from '@/server/trmnl/screens/CanvasLogo.tsx';
 const TOO_OLD_OFFSET = 1000 * 60 * 60 * 24 * 40;
 const ONE_DAY = 1000 * 60 * 60 * 24;
 
+const stripNonAscii = (text: string) => {
+    return text.replace(/[^\x20-\x7E]/g, '');
+};
+
 interface Assignment {
     id: number;
     courseId: number;
@@ -72,7 +76,11 @@ function processAssignments(
             return course ? { ...a, course } : undefined;
         })
         .filter((x) => x !== undefined)
-        .sort((a, b) => (a.dueAt?.getDate() ?? 0) - (b.dueAt?.getDate() ?? 0));
+        .sort(
+            (a, b) =>
+                (a.dueAt ? a.dueAt.getTime() : Number.POSITIVE_INFINITY) -
+                (b.dueAt ? b.dueAt.getTime() : Number.POSITIVE_INFINITY),
+        );
 
     const overdueAssignments = values.filter((a) => {
         if (!a.dueAt) return false;
@@ -152,7 +160,7 @@ const AssignmentItem: FC<{ assignment: AssignmentWithCourse }> = ({
         <div className='meta'></div>
         <div className='content'>
             <span className='title title--small clamp--1'>
-                {assignment.name}
+                {stripNonAscii(assignment.name)}
             </span>
             <p className='flex gap--small'>
                 {assignment.dueAt && (
@@ -167,7 +175,7 @@ const AssignmentItem: FC<{ assignment: AssignmentWithCourse }> = ({
                     className='label label--small clamp--1'
                     style={{ flexShrink: 999 }}
                 >
-                    {assignment.course.name}
+                    {stripNonAscii(assignment.course.name)}
                 </span>
             </p>
         </div>
