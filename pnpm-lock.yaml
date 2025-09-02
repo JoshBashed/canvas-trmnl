@@ -35,9 +35,6 @@ importers:
       react-router:
         specifier: ^7.8.2
         version: 7.8.2(react-dom@19.1.1(react@19.1.1))(react@19.1.1)
-      rollup:
-        specifier: ^4.50.0
-        version: 4.50.0
       zod:
         specifier: ^4.1.5
         version: 4.1.5
@@ -90,6 +87,9 @@ importers:
       postcss:
         specifier: ^8.5.6
         version: 8.5.6
+      rollup:
+        specifier: ^4.50.0
+        version: 4.50.0
       rollup-plugin-copy:
         specifier: ^3.5.0
         version: 3.5.0
