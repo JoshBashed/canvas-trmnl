@@ -19,6 +19,8 @@ const CanvasCourseSchema = z.object({
 const CanvasCoursesSchema = z.array(CanvasCourseSchema);
 export interface CoursesRequest {
     enrollmentRole?: 'teacher' | 'student' | 'ta' | 'observer' | 'designer';
+    enrollmentState?: 'active' | 'invited_or_pending' | 'completed';
+    state?: Array<'unpublished' | 'available' | 'completed' | 'deleted'>;
 }
 export type CanvasCoursesResponse = z.infer<typeof CanvasCoursesSchema>;
 export type CanvasCoursesErrors =
@@ -34,6 +36,8 @@ export const fetchCourses = async (
     const url = new URL('/api/v1/courses', config.baseUrl);
     url.search = createSearchParams({
         enrollment_role: request.enrollmentRole,
+        enrollment_state: request.enrollmentState,
+        'state[]': request.state,
     }).toString();
 
     // Make the request.
