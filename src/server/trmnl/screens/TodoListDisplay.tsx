@@ -3,6 +3,64 @@ import { CanvasLogo } from '@/server/trmnl/screens/CanvasLogo.tsx';
 
 const TOO_OLD_OFFSET = 1000 * 60 * 60 * 24 * 40;
 const ONE_DAY = 1000 * 60 * 60 * 24;
+const RANDOM_EMOTICONS_ALL_DONE = [
+    ':D',
+    ':-D',
+    'xD',
+    '8D',
+    ':)',
+    ':O',
+    ':]',
+    ':3',
+    '^_^',
+    '(>_<)',
+    '(^_^)',
+    '\\(^_^)/',
+    '(^o^)',
+    '\\(^o^)/',
+    '(^-^)',
+    '(o_o)',
+    ':-)',
+    ':-]',
+    ':-3',
+    ':>',
+    ':->',
+    ':]',
+    '=]',
+    '=D',
+    ':-P',
+    ':P',
+    ':-p',
+    ':p',
+    ';-)',
+    ';)',
+    ':-|',
+    ':|',
+    ':-/',
+    ':/',
+    ':-\\',
+    ':\\',
+    ':-S',
+    ':S',
+    ':-$',
+    ':$',
+    ':-*',
+    ':*',
+    ':-X',
+    ':X',
+    ':-#',
+    ':#',
+    ':-@',
+    ':@',
+    'O:)',
+    'O:-)',
+    '>:-)',
+    '>:)',
+    ':-]',
+    ':-}',
+    ':}',
+    ':-]',
+];
 
 const stripNonAscii = (text: string) => {
     return text.replace(/[^\x20-\x7E]/g, '');
@@ -280,22 +338,45 @@ export const TodoListDisplay: FC<TodoListDisplayProps> = ({
                             )}
                         </div>
                     )}
-                    <div
-                        className={`gap flex ${layout === 'halfHorizontal' ? 'flex--row' : 'flex--col'} ${layout === 'halfVertical' ? 'w--full' : 'h--full'}`}
-                        style={{ flexGrow: 1 }}
-                    >
-                        {sections
-                            .filter((section) => section.assignments.length > 0)
-                            .map((section) => (
-                                <AssignmentSection
-                                    assignments={section.assignments}
-                                    className={section.className}
-                                    key={section.name}
-                                    layout={layout}
-                                    name={section.name}
-                                />
-                            ))}
-                    </div>
+                    {sections.filter(
+                        (section) => section.assignments.length > 0,
+                    ).length > 0 ? (
+                        <div
+                            className={`gap flex ${layout === 'halfHorizontal' ? 'flex--row' : 'flex--col'} ${layout === 'halfVertical' ? 'w--full' : 'h--full'}`}
+                            style={{ flexGrow: 1 }}
+                        >
+                            {sections
+                                .filter(
+                                    (section) => section.assignments.length > 0,
+                                )
+                                .map((section) => (
+                                    <AssignmentSection
+                                        assignments={section.assignments}
+                                        className={section.className}
+                                        key={section.name}
+                                        layout={layout}
+                                        name={section.name}
+                                    />
+                                ))}
+                        </div>
+                    ) : (
+                        <div
+                            className='flex flex--center flex--col p--4'
+                            style={{ flexGrow: 1 }}
+                        >
+                            <span className='title'>
+                                {
+                                    RANDOM_EMOTICONS_ALL_DONE[
+                                        Math.floor(
+                                            Math.random() *
+                                                RANDOM_EMOTICONS_ALL_DONE.length,
+                                        )
+                                    ]
+                                }
+                            </span>
+                            <span className='label'>All caught up!</span>
+                        </div>
+                    )}
                 </div>
             </div>
             <div className='title_bar'>

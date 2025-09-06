@@ -45,7 +45,10 @@ export const fetchAssignmentData = async (
           ),
       ]
 > => {
-    const [coursesSuccess, courses] = await fetchCourses(canvasObject, {});
+    const [coursesSuccess, courses] = await fetchCourses(canvasObject, {
+        enrollmentState: 'active',
+        state: ['available'],
+    });
     if (!coursesSuccess) {
         return [
             false,
