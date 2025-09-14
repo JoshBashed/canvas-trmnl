@@ -94,7 +94,7 @@ const SectionHeader: FC<{ title: string; className: string }> = ({
     className,
 }) => (
     <div
-        className={`w--full rounded--medium p--2 ${className}`}
+        className={`w--full rounded--small rounded-t--medium p--2 ${className}`}
         style={{ borderRadius: '8px 8px 4px 4px' }}
     >
         <span className='title title--small text-stroke'>{title}</span>
@@ -108,7 +108,7 @@ const AssignmentCompletionBox: FC<{
     label: string;
 }> = ({ mode, className, count, label }) => (
     <div
-        className={`flex ${mode === 'horizontal' ? 'flex--row' : 'w--full flex--col'} flex--center rounded--medium p--2 ${className}`}
+        className={`flex ${mode === 'horizontal' ? 'flex--row' : 'w--full flex--col'} flex--center rounded-small p--2 ${className}`}
         style={{ borderRadius: '8px', flex: 1 }}
     >
         <p
@@ -217,25 +217,53 @@ const AssignmentItem: FC<{ assignment: AssignmentWithCourse }> = ({
     <div className='item'>
         <div className='meta'></div>
         <div className='content'>
-            <span className='title title--small clamp--1'>
+            <span
+                className='title title--small clamp--1 w--full'
+                style={{
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
+                    whiteSpace: 'nowrap',
+                }}
+            >
                 {stripNonAscii(assignment.name)}
             </span>
-            <p className='flex gap--small'>
+            <div
+                className='flex w--full gap--small'
+                style={{ maxWidth: '100%' }}
+            >
                 {assignment.dueAt && (
                     <span
                         className='label label--small label--underline clamp--none'
-                        style={{ overflow: 'hidden', whiteSpace: 'nowrap' }}
+                        style={{ whiteSpace: 'nowrap' }}
                     >
                         {assignment.dueAt.toLocaleString()}
                     </span>
                 )}
-                <span
-                    className='label label--small clamp--1'
-                    style={{ flexShrink: 999 }}
+                <div
+                    style={{
+                        flexGrow: 1,
+                        isolation: 'isolate',
+                        minWidth: '0px',
+                        position: 'relative',
+                    }}
                 >
-                    {stripNonAscii(assignment.course.name)}
-                </span>
-            </p>
+                    <p
+                        className='label label--small'
+                        style={{
+                            display: 'block',
+                            overflow: 'hidden',
+                            position: 'absolute',
+                            right: 0,
+                            textOverflow: 'ellipsis',
+                            top: 0,
+                            whiteSpace: 'nowrap',
+                            width: '100%',
+                        }}
+                    >
+                        {stripNonAscii(assignment.course.name)}
+                    </p>
+                </div>
+            </div>
         </div>
     </div>
 );
@@ -313,7 +341,7 @@ export const TodoListDisplay: FC<TodoListDisplayProps> = ({
 
     return (
         <>
-            <div className={`layout ${layout === 'full' ? 'p--0 pb--2' : ''}`}>
+            <div className={`layout ${layout === 'full' ? '' : ''}`}>
                 <div
                     className={`flex ${layout === 'halfVertical' ? 'flex--col' : 'flex--row'} gap h--full w--full`}
                 >
@@ -342,8 +370,8 @@ export const TodoListDisplay: FC<TodoListDisplayProps> = ({
                         (section) => section.assignments.length > 0,
                     ).length > 0 ? (
                         <div
-                            className={`gap flex ${layout === 'halfHorizontal' ? 'flex--row' : 'flex--col'} ${layout === 'halfVertical' ? 'w--full' : 'h--full'}`}
-                            style={{ flexGrow: 1 }}
+                            className={`${layout === 'halfHorizontal' ? 'grid--cols-3 grid' : 'gap flex flex--col'} ${layout === 'halfVertical' ? 'w--full' : 'h--full'}`}
+                            style={{ flexGrow: 1, maxWidth: '100%' }}
                         >
                             {sections
                                 .filter(
