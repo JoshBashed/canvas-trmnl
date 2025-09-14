@@ -36,7 +36,7 @@ const STATIC_DATA = {
             description: '',
             dueAt: CREATE_DATE(60 * 24),
             id: 302,
-            name: 'Unit 2 Quiz',
+            name: 'Unit 2 Quiz With a Very Long Name to Test Overflow Handling',
         },
         '303': {
             courseId: 202,
@@ -101,7 +101,10 @@ const STATIC_DATA = {
         },
     },
     courses: {
-        '201': { id: 201, name: 'English Literature B (A. Smith)' },
+        '201': {
+            id: 201,
+            name: 'English Literature B With a Very Long Name (A. Smith)',
+        },
         '202': { id: 202, name: 'User Interface Design (R. Lin)' },
         '203': { id: 203, name: 'Digital Art & Portfolio (M. Reyes)' },
         '204': { id: 204, name: 'Current Issues Seminar (L. Tran)' },
