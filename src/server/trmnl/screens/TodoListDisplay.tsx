@@ -108,8 +108,8 @@ const AssignmentCompletionBox: FC<{
     label: string;
 }> = ({ mode, className, count, label }) => (
     <div
-        className={`flex ${mode === 'horizontal' ? 'flex--row' : 'w--full flex--col'} flex--center rounded-small p--2 ${className}`}
-        style={{ borderRadius: '8px', flex: 1 }}
+        className={`flex ${mode === 'horizontal' ? 'flex--row' : 'w--full flex--col'} flex--center rounded--small p--2 ${className}`}
+        style={{ flex: 1 }}
     >
         <p
             className={`${mode === 'horizontal' ? 'label' : 'title title--small'} text-stroke`}
@@ -243,7 +243,7 @@ const AssignmentItem: FC<{ assignment: AssignmentWithCourse }> = ({
                     style={{
                         flexGrow: 1,
                         isolation: 'isolate',
-                        minWidth: '0px',
+                        minWidth: 0,
                         position: 'relative',
                     }}
                 >
