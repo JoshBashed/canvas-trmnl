@@ -14,7 +14,7 @@
     },
     "description": "Instructure Canvas LMS TRMNL plugin.",
     "devDependencies": {
-        "@biomejs/biome": "^2.2.2",
+        "@biomejs/biome": "^2.2.4",
         "@rollup/plugin-alias": "^5.1.1",
         "@rollup/plugin-commonjs": "^28.0.6",
         "@rollup/plugin-node-resolve": "^16.0.1",
