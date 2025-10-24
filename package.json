@@ -3,7 +3,7 @@
     "dependencies": {
         "@hono/node-server": "^1.19.1",
         "drizzle-orm": "^0.44.5",
-        "hono": "^4.9.6",
+        "hono": "^4.10.3",
         "jose": "^6.1.0",
         "mime-types": "^3.0.1",
         "pg": "^8.16.3",
