@@ -22,7 +22,7 @@
         "@rollup/plugin-swc": "^0.4.0",
         "@rollup/plugin-terser": "^0.4.4",
         "@swc/core": "^1.13.5",
-        "@tailwindcss/postcss": "^4.1.12",
+        "@tailwindcss/postcss": "^4.1.16",
         "@types/mime-types": "^3.0.1",
         "@types/pg": "^8.15.5",
         "@types/react": "^19.1.12",
