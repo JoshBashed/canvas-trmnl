@@ -11,7 +11,7 @@ import { verifyAccessToken } from '@/server/trmnl/token.ts';
 import { fetchAssignmentData } from '@/server/utilities/fetchAssignmentData.ts';
 import {
     createRequestLogger,
-    performSafeContextBodyParse,
+    performSafeContextFormBodyParse,
 } from '@/server/utilities/honoUtilities.ts';
 import { stringifyError, tryCatch } from '@/shared/utilities/tryCatch.ts';
 
@@ -50,7 +50,7 @@ export const generate = async (c: Context) => {
     }
 
     // Parse the body as application/x-www-form-urlencoded
-    const [formSuccess, form] = await performSafeContextBodyParse(c);
+    const [formSuccess, form] = await performSafeContextFormBodyParse(c);
     if (!formSuccess) {
         logger.info('Invalid form body.');
         return c.text('Invalid form body.', 400);

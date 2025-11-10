@@ -14,12 +14,18 @@ export const performSafeContextJsonParse = async (
     }
 };
 
-export const performSafeContextBodyParse = async (
+export const performSafeContextFormBodyParse = async (
     c: Context,
-): Promise<[true, unknown] | [false, undefined]> => {
+): Promise<[true, Record<string, string>] | [false, undefined]> => {
     try {
-        const body = await c.req.parseBody();
-        return [true, body];
+        const body = await c.req.text();
+        // Pase x-www-form-urlencoded body
+        const params = new URLSearchParams(body);
+        const bodyObject: Map<string, string> = new Map();
+        params.forEach((value, key) => {
+            bodyObject.set(key, value);
+        });
+        return [true, Object.fromEntries(bodyObject)];
     } catch (_error) {
         return [false, undefined];
     }
