@@ -1,5 +1,5 @@
 {
-    "$schema": "https://biomejs.dev/schemas/2.3.4/schema.json",
+    "$schema": "https://biomejs.dev/schemas/2.3.11/schema.json",
     "assist": {
         "actions": {
             "source": {
@@ -17,15 +17,7 @@
         }
     },
     "files": {
-        "includes": [
-            "**",
-            "!**/node_modules",
-            "!**/dist",
-            "!**/build",
-            "!**/.git",
-            "!**/.DS_Store",
-            "!**/.env*"
-        ]
+        "includes": ["**", "!**/.git"]
     },
     "formatter": {
         "enabled": true,
@@ -51,7 +43,7 @@
     },
     "vcs": {
         "clientKind": "git",
-        "enabled": false,
-        "useIgnoreFile": false
+        "enabled": true,
+        "useIgnoreFile": true
     }
 }
