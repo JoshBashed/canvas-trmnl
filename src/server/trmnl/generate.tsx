@@ -8,6 +8,7 @@ import { canvasTokens, trmnlData } from '@/server/db/schema.ts';
 import { ErrorDisplay } from '@/server/trmnl/screens/ErrorDisplay.tsx';
 import { TodoListDisplay } from '@/server/trmnl/screens/TodoListDisplay.tsx';
 import { verifyAccessToken } from '@/server/trmnl/token.ts';
+import { encryptionUtilities } from '@/server/utilities/encryptionUtilities.ts';
 import { fetchAssignmentData } from '@/server/utilities/fetchAssignmentData.ts';
 import {
     createRequestLogger,
@@ -95,7 +96,6 @@ export const generate = async (c: Context) => {
         );
         return c.text('Internal server error.', 500);
     }
-
     if (canvasToken.length === 0) {
         logger.info('No canvas token found for consumerId: %s', consumerId);
         return c.json(
@@ -106,12 +106,59 @@ export const generate = async (c: Context) => {
     }
     const canvasData = canvasToken[0];
 
+    let decryptedCanvasServer: string | null = null;
+    let decryptedCanvasToken: string | null = null;
+    if (canvasData.encryptedCanvasServer) {
+        const [decryptServerSuccess, decryptedServer] =
+            encryptionUtilities.decryptString(canvasData.encryptedCanvasServer);
+        if (!decryptServerSuccess) {
+            logger.error(
+                'Failed to decrypt canvas server for consumerId %s',
+                consumerId,
+            );
+            return c.json(
+                renderAll(() => (
+                    <ErrorDisplay errorMessage='Add a Canvas token and domain to see your assignments.' />
+                )),
+            );
+        }
+        decryptedCanvasServer = decryptedServer;
+    } else decryptedCanvasServer = canvasData.canvasServer;
+    if (canvasData.encryptedCanvasToken) {
+        const [decryptTokenSuccess, decryptedToken] =
+            encryptionUtilities.decryptString(canvasData.encryptedCanvasToken);
+        if (!decryptTokenSuccess) {
+            logger.error(
+                'Failed to decrypt canvas token for consumerId %s',
+                consumerId,
+            );
+            return c.json(
+                renderAll(() => (
+                    <ErrorDisplay errorMessage='Add a Canvas token and domain to see your assignments.' />
+                )),
+            );
+        }
+        decryptedCanvasToken = decryptedToken;
+    } else decryptedCanvasToken = canvasData.canvasToken;
+
+    if (!decryptedCanvasServer || !decryptedCanvasToken) {
+        logger.info(
+            'Missing canvas server or token for consumerId: %s',
+            consumerId,
+        );
+        return c.json(
+            renderAll(() => (
+                <ErrorDisplay errorMessage='Add a Canvas token and domain to see your assignments.' />
+            )),
+        );
+    }
+
     // Get the canvas data
-    const url = new URL(`https://${canvasData.canvasServer}`);
+    const url = new URL(`https://${decryptedCanvasServer}`);
 
     const [canvasSuccess, canvasDataResult] = await fetchAssignmentData({
         baseUrl: url,
-        token: canvasData.canvasToken,
+        token: decryptedCanvasToken,
     });
 
     if (!canvasSuccess) {

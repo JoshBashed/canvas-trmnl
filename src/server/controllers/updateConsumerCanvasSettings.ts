@@ -3,6 +3,7 @@ import { CREATE_PROCEDURE_FN } from '@/server/api/createProcedure.ts';
 import { verifyTrmnlToken } from '@/server/apiClients/trmnlApiClient.ts';
 import { db } from '@/server/db/index.ts';
 import { canvasTokens, trmnlData } from '@/server/db/schema.ts';
+import { encryptionUtilities } from '@/server/utilities/encryptionUtilities.ts';
 import { stringifyError, tryCatch } from '@/shared/utilities/tryCatch.ts';
 
 export const updateConsumerCanvasSettings =
@@ -84,11 +85,22 @@ export const updateConsumerCanvasSettings =
                         canvasServer: url.hostname,
                         canvasToken: data.canvasAccessToken,
                         consumerId: consumerId,
+                        encryptedCanvasServer:
+                            encryptionUtilities.encryptString(url.hostname),
+                        encryptedCanvasToken: encryptionUtilities.encryptString(
+                            data.canvasAccessToken,
+                        ),
                     })
                     .onConflictDoUpdate({
                         set: {
                             canvasServer: url.hostname,
                             canvasToken: data.canvasAccessToken,
+                            encryptedCanvasServer:
+                                encryptionUtilities.encryptString(url.hostname),
+                            encryptedCanvasToken:
+                                encryptionUtilities.encryptString(
+                                    data.canvasAccessToken,
+                                ),
                         },
                         target: canvasTokens.consumerId,
                     }),

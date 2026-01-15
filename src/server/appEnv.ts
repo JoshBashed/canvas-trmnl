@@ -10,6 +10,8 @@ export interface AppEnv {
         clientId: string;
         clientSecret: string;
     };
+    encryptionKey: string;
+    mode: 'server' | 'job';
 }
 
 export const appEnv: AppEnv = (() => {
@@ -41,9 +43,23 @@ export const appEnv: AppEnv = (() => {
         }
     }
 
+    const encryptionKey = process.env.ENCRYPTION_KEY;
+    if (!encryptionKey) {
+        logger.error('ENCRYPTION_KEY is not set.');
+        process.exit(1);
+    }
+
+    const mode = process.env.APP_MODE ?? 'server';
+    if (mode !== 'server' && mode !== 'job') {
+        logger.error("APP_MODE must be either 'server' or 'job'.");
+        process.exit(1);
+    }
+
     return {
         databaseUrl,
         dev,
+        encryptionKey,
+        mode,
         port,
         trmnl: {
             clientId: trmnlClientId,

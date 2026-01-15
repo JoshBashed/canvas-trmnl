@@ -7,6 +7,13 @@
             "tag": "0000_outgoing_loners",
             "version": "7",
             "when": 1743457393563
+        },
+        {
+            "breakpoints": true,
+            "idx": 1,
+            "tag": "0001_faithful_the_initiative",
+            "version": "7",
+            "when": 1768503785687
         }
     ],
     "version": "7"

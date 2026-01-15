@@ -17,13 +17,13 @@ import { ServerApp } from '@/shared/pages/App.tsx';
 import { createLogger } from '@/shared/utilities/loggingUtilities.ts';
 import { stringifyError, tryCatch } from '@/shared/utilities/tryCatch.ts';
 
-const logger = createLogger('@/server/index');
+const logger = createLogger('@/server/server');
 
 const STATUS_CODE_START = 'data-status-code="';
 const STATUS_CODE_END = '"';
 const CONTENTLESS_STATUS_CODES = [101, 204, 205, 304];
 
-const main = async () => {
+export const serverMain = async () => {
     // Get the static directory.
     const dirname = path.dirname(fileURLToPath(import.meta.url));
     const staticPath = await fsPromises.realpath(path.join(dirname, 'static'));
@@ -139,5 +139,3 @@ const main = async () => {
 
     logger.info(`Server started on http://127.0.0.1:${appEnv.port}/.`);
 };
-
-main();

@@ -27,3 +27,14 @@ jobs:
             value: production
             type: GENERAL
       dockerfile_path: ./migrate.dockerfile
+    - name: job
+      kind: POST_DEPLOY
+      github:
+          repo: JoshuaBrest/canvas-trmnl
+          branch: main
+          deploy_on_push: true
+      envs:
+          - key: NODE_ENV
+            value: production
+            type: GENERAL
+      dockerfile_path: ./job.dockerfile

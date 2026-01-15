@@ -14,7 +14,7 @@ const currentDir = dirname(fileURLToPath(import.meta.url));
 
 export default defineConfig([
     {
-        input: 'src/server/index.tsx',
+        input: 'src/server/index.ts',
         output: {
             file: 'dist/index.cjs',
             format: 'cjs',

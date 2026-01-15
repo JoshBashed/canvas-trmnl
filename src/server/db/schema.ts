@@ -48,12 +48,14 @@ export const trmnlAuthorizationTokens = pgTable('trmnlAuthorizationTokens', {
 });
 
 export const canvasTokens = pgTable('canvasTokens', {
-    canvasServer: text().notNull(),
-    canvasToken: text().notNull(),
+    canvasServer: text(),
+    canvasToken: text(),
     consumerId: uuid()
         .unique()
         .notNull()
         .references(() => consumers.id, { onDelete: 'cascade' }),
+    encryptedCanvasServer: text(),
+    encryptedCanvasToken: text(),
     id: uuid().primaryKey().defaultRandom(),
 });
 
