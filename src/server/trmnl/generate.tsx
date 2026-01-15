@@ -17,6 +17,12 @@ import {
 import { stringifyError, tryCatch } from '@/shared/utilities/tryCatch.ts';
 
 const GenerateSchema = z.object({
+    trmnl: z.object({
+        user: z.object({
+            name: z.string(),
+            time_zone_iana: z.string(),
+        }),
+    }),
     user_uuid: z.uuid(),
 });
 
@@ -56,7 +62,6 @@ export const generate = async (c: Context) => {
         logger.info('Invalid form body.');
         return c.text('Invalid form body.', 400);
     }
-
     const parsedBody = GenerateSchema.safeParse(form);
     if (!parsedBody.success) {
         logger.info('Invalid request body schema.', parsedBody.error);
@@ -79,8 +84,23 @@ export const generate = async (c: Context) => {
         logger.info('TrmnlData does not exist for userId: %s', userId);
         return c.text('Missing data.', 400);
     }
-
     const consumerId = trmnlDataQuery[0].consumerId;
+
+    // If the consumer's name has changed, update it.
+    if (parsedBody.data.trmnl.user.name !== trmnlDataQuery[0].name) {
+        const [updateNameResult, updateName] = await tryCatch(
+            db
+                .update(trmnlData)
+                .set({ name: parsedBody.data.trmnl.user.name })
+                .where(eq(trmnlData.trmnlId, userId)),
+        );
+        if (!updateNameResult)
+            logger.error(
+                'Failed to update consumer name for trmnlId %s: %s',
+                userId,
+                stringifyError(updateName),
+            );
+    }
 
     // Get the canvas token from the database.
     const [canvasTokenSuccess, canvasToken] = await tryCatch(
@@ -204,6 +224,7 @@ export const generate = async (c: Context) => {
                 assignments={canvasDataResult.assignments}
                 courses={canvasDataResult.courses}
                 layout={layout}
+                timezone={parsedBody.data.trmnl.user.time_zone_iana}
             />
         )),
         merge_variables: data,

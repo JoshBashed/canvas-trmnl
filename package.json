@@ -1,7 +1,9 @@
 {
     "author": "JoshuaBrest <36625023+JoshuaBrest@users.noreply.github.com>",
     "dependencies": {
+        "@date-fns/tz": "^1.4.1",
         "@hono/node-server": "^1.19.8",
+        "date-fns": "^4.1.0",
         "drizzle-orm": "^0.44.7",
         "hono": "^4.11.3",
         "jose": "^6.1.3",

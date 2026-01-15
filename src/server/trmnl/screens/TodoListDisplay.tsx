@@ -1,3 +1,5 @@
+import { TZDate } from '@date-fns/tz';
+import { format } from 'date-fns';
 import React, { type FC } from 'react';
 import { CanvasLogo } from '@/server/trmnl/screens/CanvasLogo.tsx';
 
@@ -87,6 +89,7 @@ interface TodoListDisplayProps {
     courses: Map<number, { id: number; name: string }>;
     assignments: Map<number, Assignment>;
     layout: 'full' | 'halfVertical' | 'halfHorizontal' | 'quadrant';
+    timezone: string;
 }
 
 const SectionHeader: FC<{ title: string; className: string }> = ({
@@ -211,9 +214,10 @@ function capAssignments(
     };
 }
 
-const AssignmentItem: FC<{ assignment: AssignmentWithCourse }> = ({
-    assignment,
-}) => (
+const AssignmentItem: FC<{
+    assignment: AssignmentWithCourse;
+    timezone: string;
+}> = ({ assignment, timezone }) => (
     <div className='item'>
         <div className='meta'></div>
         <div className='content'>
@@ -236,7 +240,10 @@ const AssignmentItem: FC<{ assignment: AssignmentWithCourse }> = ({
                         className='label label--small label--underline clamp--none'
                         style={{ whiteSpace: 'nowrap' }}
                     >
-                        {assignment.dueAt.toLocaleString()}
+                        {format(
+                            new TZDate(assignment.dueAt, timezone),
+                            'yyyy-MM-dd HH:mm',
+                        )}
                     </span>
                 )}
                 <div
@@ -273,14 +280,15 @@ const AssignmentSection: FC<{
     className: string;
     assignments: AssignmentWithCourse[];
     layout: 'full' | 'halfVertical' | 'halfHorizontal' | 'quadrant';
-}> = ({ name, className, assignments, layout }) => (
+    timezone: string;
+}> = ({ name, className, assignments, layout, timezone }) => (
     <div
         className={`gap flex flex--col ${layout === 'halfHorizontal' ? 'h-full' : 'w-full'}`}
         style={{ flex: layout === 'halfHorizontal' ? 1 : undefined }}
     >
         <SectionHeader className={className} title={name} />
         {assignments.map((a) => (
-            <AssignmentItem assignment={a} key={a.id} />
+            <AssignmentItem assignment={a} key={a.id} timezone={timezone} />
         ))}
     </div>
 );
@@ -289,6 +297,7 @@ export const TodoListDisplay: FC<TodoListDisplayProps> = ({
     courses,
     assignments,
     layout,
+    timezone,
 }) => {
     const { overdueAssignments, todayAssignments, todoAssignments } =
         processAssignments(assignments, courses);
@@ -384,6 +393,7 @@ export const TodoListDisplay: FC<TodoListDisplayProps> = ({
                                         key={section.name}
                                         layout={layout}
                                         name={section.name}
+                                        timezone={timezone}
                                     />
                                 ))}
                         </div>
