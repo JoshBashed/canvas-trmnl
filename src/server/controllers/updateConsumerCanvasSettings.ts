@@ -82,8 +82,6 @@ export const updateConsumerCanvasSettings =
                 db
                     .insert(canvasTokens)
                     .values({
-                        canvasServer: url.hostname,
-                        canvasToken: data.canvasAccessToken,
                         consumerId: consumerId,
                         encryptedCanvasServer:
                             encryptionUtilities.encryptString(url.hostname),
@@ -93,8 +91,6 @@ export const updateConsumerCanvasSettings =
                     })
                     .onConflictDoUpdate({
                         set: {
-                            canvasServer: url.hostname,
-                            canvasToken: data.canvasAccessToken,
                             encryptedCanvasServer:
                                 encryptionUtilities.encryptString(url.hostname),
                             encryptedCanvasToken:

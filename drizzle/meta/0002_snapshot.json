@@ -1,0 +1,265 @@
+{
+    "_meta": {
+        "columns": {},
+        "schemas": {},
+        "tables": {}
+    },
+    "dialect": "postgresql",
+    "enums": {},
+    "id": "f01095b0-2c76-4dc8-a08a-af03ac6954d9",
+    "policies": {},
+    "prevId": "f8ea5538-9fbb-49be-bf4d-86ce70138ca8",
+    "roles": {},
+    "schemas": {},
+    "sequences": {},
+    "tables": {
+        "public.canvasTokens": {
+            "checkConstraints": {},
+            "columns": {
+                "consumerId": {
+                    "name": "consumerId",
+                    "notNull": true,
+                    "primaryKey": false,
+                    "type": "uuid"
+                },
+                "encryptedCanvasServer": {
+                    "name": "encryptedCanvasServer",
+                    "notNull": true,
+                    "primaryKey": false,
+                    "type": "text"
+                },
+                "encryptedCanvasToken": {
+                    "name": "encryptedCanvasToken",
+                    "notNull": true,
+                    "primaryKey": false,
+                    "type": "text"
+                },
+                "id": {
+                    "default": "gen_random_uuid()",
+                    "name": "id",
+                    "notNull": true,
+                    "primaryKey": true,
+                    "type": "uuid"
+                }
+            },
+            "compositePrimaryKeys": {},
+            "foreignKeys": {
+                "canvasTokens_consumerId_consumers_id_fk": {
+                    "columnsFrom": ["consumerId"],
+                    "columnsTo": ["id"],
+                    "name": "canvasTokens_consumerId_consumers_id_fk",
+                    "onDelete": "cascade",
+                    "onUpdate": "no action",
+                    "tableFrom": "canvasTokens",
+                    "tableTo": "consumers"
+                }
+            },
+            "indexes": {},
+            "isRLSEnabled": false,
+            "name": "canvasTokens",
+            "policies": {},
+            "schema": "",
+            "uniqueConstraints": {
+                "canvasTokens_consumerId_unique": {
+                    "columns": ["consumerId"],
+                    "name": "canvasTokens_consumerId_unique",
+                    "nullsNotDistinct": false
+                }
+            }
+        },
+        "public.consumers": {
+            "checkConstraints": {},
+            "columns": {
+                "createdAt": {
+                    "default": "now()",
+                    "name": "createdAt",
+                    "notNull": true,
+                    "primaryKey": false,
+                    "type": "timestamp"
+                },
+                "id": {
+                    "default": "gen_random_uuid()",
+                    "name": "id",
+                    "notNull": true,
+                    "primaryKey": true,
+                    "type": "uuid"
+                }
+            },
+            "compositePrimaryKeys": {},
+            "foreignKeys": {},
+            "indexes": {},
+            "isRLSEnabled": false,
+            "name": "consumers",
+            "policies": {},
+            "schema": "",
+            "uniqueConstraints": {}
+        },
+        "public.settings": {
+            "checkConstraints": {},
+            "columns": {
+                "consumerId": {
+                    "name": "consumerId",
+                    "notNull": true,
+                    "primaryKey": false,
+                    "type": "uuid"
+                },
+                "id": {
+                    "default": "gen_random_uuid()",
+                    "name": "id",
+                    "notNull": true,
+                    "primaryKey": true,
+                    "type": "uuid"
+                },
+                "setting": {
+                    "name": "setting",
+                    "notNull": true,
+                    "primaryKey": false,
+                    "type": "json"
+                }
+            },
+            "compositePrimaryKeys": {},
+            "foreignKeys": {
+                "settings_consumerId_consumers_id_fk": {
+                    "columnsFrom": ["consumerId"],
+                    "columnsTo": ["id"],
+                    "name": "settings_consumerId_consumers_id_fk",
+                    "onDelete": "cascade",
+                    "onUpdate": "no action",
+                    "tableFrom": "settings",
+                    "tableTo": "consumers"
+                }
+            },
+            "indexes": {},
+            "isRLSEnabled": false,
+            "name": "settings",
+            "policies": {},
+            "schema": "",
+            "uniqueConstraints": {
+                "settings_consumerId_unique": {
+                    "columns": ["consumerId"],
+                    "name": "settings_consumerId_unique",
+                    "nullsNotDistinct": false
+                }
+            }
+        },
+        "public.trmnlAuthorizationTokens": {
+            "checkConstraints": {},
+            "columns": {
+                "createdAt": {
+                    "default": "now()",
+                    "name": "createdAt",
+                    "notNull": true,
+                    "primaryKey": false,
+                    "type": "timestamp"
+                },
+                "id": {
+                    "default": "gen_random_uuid()",
+                    "name": "id",
+                    "notNull": true,
+                    "primaryKey": true,
+                    "type": "uuid"
+                },
+                "token": {
+                    "name": "token",
+                    "notNull": true,
+                    "primaryKey": false,
+                    "type": "text"
+                },
+                "used": {
+                    "default": false,
+                    "name": "used",
+                    "notNull": true,
+                    "primaryKey": false,
+                    "type": "boolean"
+                }
+            },
+            "compositePrimaryKeys": {},
+            "foreignKeys": {},
+            "indexes": {},
+            "isRLSEnabled": false,
+            "name": "trmnlAuthorizationTokens",
+            "policies": {},
+            "schema": "",
+            "uniqueConstraints": {
+                "trmnlAuthorizationTokens_token_unique": {
+                    "columns": ["token"],
+                    "name": "trmnlAuthorizationTokens_token_unique",
+                    "nullsNotDistinct": false
+                }
+            }
+        },
+        "public.trmnlData": {
+            "checkConstraints": {},
+            "columns": {
+                "consumerId": {
+                    "name": "consumerId",
+                    "notNull": true,
+                    "primaryKey": false,
+                    "type": "uuid"
+                },
+                "email": {
+                    "name": "email",
+                    "notNull": true,
+                    "primaryKey": false,
+                    "type": "varchar"
+                },
+                "id": {
+                    "default": "gen_random_uuid()",
+                    "name": "id",
+                    "notNull": true,
+                    "primaryKey": true,
+                    "type": "uuid"
+                },
+                "name": {
+                    "name": "name",
+                    "notNull": true,
+                    "primaryKey": false,
+                    "type": "varchar"
+                },
+                "settingsId": {
+                    "name": "settingsId",
+                    "notNull": true,
+                    "primaryKey": false,
+                    "type": "integer"
+                },
+                "trmnlId": {
+                    "name": "trmnlId",
+                    "notNull": true,
+                    "primaryKey": false,
+                    "type": "uuid"
+                }
+            },
+            "compositePrimaryKeys": {},
+            "foreignKeys": {
+                "trmnlData_consumerId_consumers_id_fk": {
+                    "columnsFrom": ["consumerId"],
+                    "columnsTo": ["id"],
+                    "name": "trmnlData_consumerId_consumers_id_fk",
+                    "onDelete": "cascade",
+                    "onUpdate": "no action",
+                    "tableFrom": "trmnlData",
+                    "tableTo": "consumers"
+                }
+            },
+            "indexes": {},
+            "isRLSEnabled": false,
+            "name": "trmnlData",
+            "policies": {},
+            "schema": "",
+            "uniqueConstraints": {
+                "trmnlData_consumerId_unique": {
+                    "columns": ["consumerId"],
+                    "name": "trmnlData_consumerId_unique",
+                    "nullsNotDistinct": false
+                },
+                "trmnlData_trmnlId_unique": {
+                    "columns": ["trmnlId"],
+                    "name": "trmnlData_trmnlId_unique",
+                    "nullsNotDistinct": false
+                }
+            }
+        }
+    },
+    "version": "7",
+    "views": {}
+}
