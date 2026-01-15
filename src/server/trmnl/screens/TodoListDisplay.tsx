@@ -217,63 +217,68 @@ function capAssignments(
 const AssignmentItem: FC<{
     assignment: AssignmentWithCourse;
     timezone: string;
-}> = ({ assignment, timezone }) => (
-    <div className='item'>
-        <div className='meta'></div>
-        <div className='content'>
-            <span
-                className='title title--small clamp--1 w--full'
-                style={{
-                    overflow: 'hidden',
-                    textOverflow: 'ellipsis',
-                    whiteSpace: 'nowrap',
-                }}
-            >
-                {stripNonAscii(assignment.name)}
-            </span>
-            <div
-                className='flex w--full gap--small'
-                style={{ maxWidth: '100%' }}
-            >
-                {assignment.dueAt && (
-                    <span
-                        className='label label--small label--underline clamp--none'
-                        style={{ whiteSpace: 'nowrap' }}
-                    >
-                        {format(
-                            new TZDate(assignment.dueAt, timezone),
-                            'yyyy-MM-dd HH:mm',
-                        )}
-                    </span>
-                )}
-                <div
+}> = ({ assignment, timezone }) => {
+    let dateString: string | null = null;
+    if (assignment.dueAt) {
+        const tzDate = new TZDate(assignment.dueAt, timezone);
+        if (!Number.isNaN(tzDate.getDate()))
+            dateString = format(tzDate, 'yyyy-MM-dd HH:mm');
+    }
+    return (
+        <div className='item'>
+            <div className='meta'></div>
+            <div className='content'>
+                <span
+                    className='title title--small clamp--1 w--full'
                     style={{
-                        flexGrow: 1,
-                        isolation: 'isolate',
-                        minWidth: 0,
-                        position: 'relative',
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis',
+                        whiteSpace: 'nowrap',
                     }}
                 >
-                    <p
-                        className='label label--small'
+                    {stripNonAscii(assignment.name)}
+                </span>
+                <div
+                    className='flex w--full gap--small'
+                    style={{ maxWidth: '100%' }}
+                >
+                    {dateString && (
+                        <span
+                            className='label label--small label--underline clamp--none'
+                            style={{ whiteSpace: 'nowrap' }}
+                        >
+                            {dateString}
+                        </span>
+                    )}
+                    <div
                         style={{
-                            display: 'block',
-                            overflow: 'hidden',
-                            position: 'absolute',
-                            right: 0,
-                            textOverflow: 'ellipsis',
-                            top: 0,
-                            whiteSpace: 'nowrap',
-                            width: '100%',
+                            flexGrow: 1,
+                            isolation: 'isolate',
+                            minWidth: 0,
+                            position: 'relative',
                         }}
                     >
-                        {stripNonAscii(assignment.course.name)}
-                    </p>
+                        <p
+                            className='label label--small'
+                            style={{
+                                display: 'block',
+                                overflow: 'hidden',
+                                position: 'absolute',
+                                right: 0,
+                                textOverflow: 'ellipsis',
+                                top: 0,
+                                whiteSpace: 'nowrap',
+                                width: '100%',
+                            }}
+                        >
+                            {stripNonAscii(assignment.course.name)}
+                        </p>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-);
+    );
+};
 
 const AssignmentSection: FC<{
     name: string;
