@@ -1,33 +1,37 @@
 import { getConnInfo } from '@hono/node-server/conninfo';
 import type { Context } from 'hono';
+import qs from 'qs';
 import { appEnv } from '@/server/appEnv.ts';
 import { createLogger } from '@/shared/utilities/loggingUtilities.ts';
+import { tryCatch } from '@/shared/utilities/tryCatch.ts';
 
 export const performSafeContextJsonParse = async (
     c: Context,
-): Promise<[true, unknown] | [false, undefined]> => {
+): Promise<[true, unknown] | [false, 'invalidText' | 'invalidJson']> => {
+    const [textResult, text] = await tryCatch(c.req.text());
+    if (!textResult) return [false, 'invalidText'];
+
     try {
-        const json = await c.req.json();
+        const json = JSON.parse(text as string);
         return [true, json];
-    } catch (_error) {
-        return [false, undefined];
+    } catch {
+        return [false, 'invalidJson'];
     }
 };
 
 export const performSafeContextFormBodyParse = async (
     c: Context,
-): Promise<[true, Record<string, string>] | [false, undefined]> => {
+): Promise<
+    [true, unknown] | [false, 'textDecodeError' | 'invalidQueryString']
+> => {
+    const [textResult, text] = await tryCatch(c.req.text());
+    if (!textResult) return [false, 'textDecodeError'];
+
     try {
-        const body = await c.req.text();
-        // Pase x-www-form-urlencoded body
-        const params = new URLSearchParams(body);
-        const bodyObject: Map<string, string> = new Map();
-        params.forEach((value, key) => {
-            bodyObject.set(key, value);
-        });
-        return [true, Object.fromEntries(bodyObject)];
-    } catch (_error) {
-        return [false, undefined];
+        const parsed = qs.parse(text as string);
+        return [true, parsed];
+    } catch {
+        return [false, 'invalidQueryString'];
     }
 };
 
