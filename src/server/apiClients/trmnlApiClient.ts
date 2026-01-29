@@ -8,7 +8,7 @@ import { createLogger } from '@/shared/utilities/loggingUtilities.ts';
 
 const logger = createLogger('@/server/apiClients/trmnlApiClient');
 
-const TRMNL_BASE_URL = 'https://usetrmnl.com';
+const TRMNL_BASE_URL = 'https://trmnl.com';
 const TRMNL_JWK_URL = `${TRMNL_BASE_URL}/.well-known/jwks.json`;
 const JWK_CACHE_TTL = 4 * 60 * 60 * 1000; // 4 hour in milliseconds
 

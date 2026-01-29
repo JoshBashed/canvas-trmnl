@@ -14,7 +14,7 @@ export const OauthCreate: FC = () => {
         const urlParams = new URLSearchParams(window.location.search);
         const rawCallbackURL = urlParams.get('callback_url');
         const code = urlParams.get('code');
-        const ALLOWED_BASE_DOMAIN = 'usetrmnl.com';
+        const ALLOWED_BASE_DOMAIN = 'trmnl.com';
 
         if (!rawCallbackURL) {
             setState('error');

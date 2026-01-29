@@ -41,8 +41,8 @@ document.addEventListener('DOMContentLoaded', ()=>{
         return element;
     };
     const headElements = [
-        el('link', { rel: 'stylesheet', href: 'https://usetrmnl.com/css/latest/plugins.css' }),
-        el('script', { src: 'https://usetrmnl.com/js/latest/plugins.js' }),
+        el('link', { rel: 'stylesheet', href: 'https://trmnl.com/css/latest/plugins.css' }),
+        el('script', { src: 'https://trmnl.com/js/latest/plugins.js' }),
         el('link', { rel: 'preconnect', href: 'https://fonts.googleapis.com' }),
         el('link', { rel: 'preconnect', href: 'https://fonts.gstatic.com', crossorigin: 'anonymous' }),
         el('link', { rel: 'stylesheet', href: 'https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap' })

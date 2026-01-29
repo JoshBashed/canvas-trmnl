@@ -23,7 +23,7 @@ export const Home = () => {
                         </div>
                         <a
                             className='inline-block w-max rounded-full bg-zinc-50 px-4 py-2 text-zinc-950 hover:underline'
-                            href='https://usetrmnl.com/plugin_settings/new?keyname=canvas_lms'
+                            href='https://trmnl.com/plugin_settings/new?keyname=canvas_lms'
                         >
                             Add to TRMNL
                         </a>

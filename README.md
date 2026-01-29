@@ -11,7 +11,7 @@ It's as simple as that.
 
 ## How to use it?
 
-1. Install the plugin from [here](https://usetrmnl.com/plugin_settings/new?keyname=canvas_lms).
+1. Install the plugin from [here](https://trmnl.com/plugin_settings/new?keyname=canvas_lms).
 2. Enter your canvas domain + access token (generate one in settings).
 3. TRMNL will start showing your Canvas data.
 

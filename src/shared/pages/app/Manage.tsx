@@ -135,7 +135,7 @@ export const ManagePage: FC<{
             <div className='flex items-center justify-between'>
                 <a
                     className='flex gap-2 rounded text-sm text-zinc-400 hover:underline'
-                    href={`https://usetrmnl.com/plugin_settings/${props.trmnlSettingsId}/edit?keyname=canvas_lms`}
+                    href={`https://trmnl.com/plugin_settings/${props.trmnlSettingsId}/edit?keyname=canvas_lms`}
                 >
                     <svg
                         aria-label='back arrow'
