@@ -75,6 +75,7 @@ export const createDevRoutes = (): Hono => {
                     assignments={assignments}
                     courses={courses}
                     layout={layout}
+                    timezone={'America/Los_Angeles'}
                 />
             )),
         );
