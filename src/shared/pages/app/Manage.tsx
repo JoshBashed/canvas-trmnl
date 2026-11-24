@@ -205,14 +205,14 @@ export const ManagePage: FC<{
                             value={canvasToken}
                         />
                         <p className='text-sm text-zinc-400'>
-                            Find your token{' '}
+                            Find your token in your{' '}
                             <a
                                 className='underline'
                                 href={`https://${sanitizedDomain}/profile/settings`}
                                 rel='noreferrer'
                                 target='_blank'
                             >
-                                here
+                                Canvas profile settings
                             </a>
                             . Then select <b>New Access Token</b>.{' '}
                             <span className='text-red-500'>

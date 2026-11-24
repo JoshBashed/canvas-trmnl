@@ -1,5 +1,5 @@
 {
-    "$schema": "https://biomejs.dev/schemas/2.3.13/schema.json",
+    "$schema": "https://biomejs.dev/schemas/2.6.8/schema.json",
     "assist": {
         "actions": {
             "source": {
@@ -36,9 +36,9 @@
         "enabled": true,
         "rules": {
             "nursery": {
-                "useSortedClasses": "warn"
+                "useTailwindSortedClasses": "warn"
             },
-            "recommended": true
+            "preset": "recommended"
         }
     },
     "vcs": {

@@ -18,6 +18,7 @@ It's as simple as that.
 ## Development
 
 Clone the repo then run the following commands to start the development server:
+
 ```bash
 pnpm install
 pnpm dev
